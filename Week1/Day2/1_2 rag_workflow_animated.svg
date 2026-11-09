@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1120" role="img" aria-labelledby="title desc">
+<title id="title">Animated RAG workflow: document preparation and answering user queries</title>
+<desc id="desc">Documents are chunked, embedded, and stored in a vector database. A user question is embedded, searched against the database, and matched chunks are combined with the question into a prompt. An LLM generates the answer. New and updated documents can be reindexed.</desc>
+<defs>
+ <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#f8fbff"/><stop offset="1" stop-color="#f1f6ff"/></linearGradient>
+ <linearGradient id="blue" x2="1"><stop stop-color="#e0f2fe"/><stop offset="1" stop-color="#dbeafe"/></linearGradient>
+ <linearGradient id="green" x2="1"><stop stop-color="#dcfce7"/><stop offset="1" stop-color="#d1fae5"/></linearGradient>
+ <linearGradient id="violet" x2="1"><stop stop-color="#ede9fe"/><stop offset="1" stop-color="#f3e8ff"/></linearGradient>
+ <filter id="shadow" x="-20%" y="-40%" width="140%" height="190%"><feDropShadow dx="0" dy="4" stdDeviation="7" flood-color="#32415d" flood-opacity=".13"/></filter>
+ <marker id="arr" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#64748b"/></marker>
+ <marker id="arrV" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0 0 L9 4.5 L0 9 z" fill="#7c3aed"/></marker>
+ <style>
+ text{font-family:Arial,'DejaVu Sans',sans-serif;fill:#18243d} .headline{font-size:42px;font-weight:800}.sub{font-size:21px;fill:#53627c}.heading{font-size:27px;font-weight:800}.txt{font-size:22px;font-weight:750}.small{font-size:17px;fill:#546176}.step{font-size:17px;font-weight:800;fill:#64748b}.arrow{fill:none;stroke:#64748b;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arr)}.vArrow{fill:none;stroke:#7c3aed;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;marker-end:url(#arrV)}.dash{stroke-dasharray:11 11;animation:run 1.3s linear infinite}.pulse{animation:pulse 3s ease-in-out infinite;transform-box:fill-box;transform-origin:center}.card{filter:url(#shadow)} .packet{fill:#f59e0b;stroke:white;stroke-width:3;filter:url(#shadow)}.p1{offset-path:path('M 308 326 L 371 326');animation:move 3.5s linear infinite}.p2{offset-path:path('M 600 326 L 663 326');animation:move 3.5s linear infinite .3s}.p3{offset-path:path('M 892 326 L 955 326');animation:move 3.5s linear infinite .6s}.p4{offset-path:path('M 475 660 L 475 715 L 1100 715 L 1100 409');animation:move 7s linear infinite}.p5{offset-path:path('M 1220 755 L 1290 755');animation:move 3s linear infinite}.legend{font-size:16px;fill:#6b7280}@keyframes run{to{stroke-dashoffset:-44}}@keyframes pulse{0%,100%{opacity:1}50%{opacity:.72}}@keyframes move{0%{offset-distance:0%;opacity:0}10%{opacity:1}90%{opacity:1}100%{offset-distance:100%;opacity:0}}@media(prefers-reduced-motion:reduce){.dash,.pulse,.packet{animation:none}}
+ </style>
+</defs>
+<rect width="1500" height="1120" fill="url(#bg)"/>
+<rect x="35" y="33" width="1430" height="1053" rx="30" fill="white" stroke="#dbe4f1" stroke-width="2"/>
+<text x="750" y="91" text-anchor="middle" class="headline">HOW RAG WORKS</text>
+<text x="750" y="127" text-anchor="middle" class="sub">RAG = Retrieval-Augmented Generation • Follow the arrows</text>
+
+<!-- knowledge lane -->
+<rect x="75" y="170" width="1350" height="263" rx="25" fill="#f0f8ff" stroke="#bfdbfe" stroke-width="2"/>
+<rect x="98" y="185" width="500" height="45" rx="18" fill="#dbeafe"/>
+<text x="120" y="215" class="heading" fill="#174e94">A. PREPARE KNOWLEDGE</text>
+<text x="665" y="215" class="small">Do this when you upload or update documents</text>
+
+<g class="card"><rect x="112" y="264" width="195" height="126" rx="18" fill="white" stroke="#93c5fd" stroke-width="3"/></g>
+<text x="209" y="296" text-anchor="middle" class="step">1</text><text x="209" y="329" text-anchor="middle" class="txt">PDFs / Docs</text><text x="209" y="359" text-anchor="middle" class="small">Original knowledge</text>
+<path d="M308 326 H371" class="arrow dash"/>
+<g class="card"><rect x="372" y="264" width="228" height="126" rx="18" fill="url(#blue)" stroke="#60a5fa" stroke-width="3"/></g>
+<text x="486" y="296" text-anchor="middle" class="step">2</text><text x="486" y="328" text-anchor="middle" class="txt">Split into chunks</text><text x="486" y="359" text-anchor="middle" class="small">Small text pieces</text>
+<path d="M601 326 H663" class="arrow dash"/>
+<g class="card"><rect x="664" y="264" width="228" height="126" rx="18" fill="url(#blue)" stroke="#60a5fa" stroke-width="3"/></g>
+<text x="778" y="296" text-anchor="middle" class="step">3</text><text x="778" y="328" text-anchor="middle" class="txt">Make embeddings</text><text x="778" y="359" text-anchor="middle" class="small">Text → vectors</text>
+<path d="M893 326 H955" class="arrow dash"/>
+<g class="card pulse"><rect x="956" y="264" width="339" height="126" rx="18" fill="url(#violet)" stroke="#a78bfa" stroke-width="3"/></g>
+<text x="1125" y="296" text-anchor="middle" class="step">4</text><text x="1125" y="328" text-anchor="middle" class="txt">Vector Database</text><text x="1125" y="359" text-anchor="middle" class="small">Stores searchable vectors + text</text>
+
+<!-- question lane -->
+<rect x="75" y="462" width="1350" height="425" rx="25" fill="#fbf9ff" stroke="#d8b4fe" stroke-width="2"/>
+<rect x="98" y="480" width="490" height="45" rx="18" fill="#ede9fe"/>
+<text x="120" y="510" class="heading">B. ANSWER A QUESTION</text>
+<text x="635" y="510" class="small">This happens each time a student asks</text>
+<g class="card"><rect x="112" y="551" width="220" height="106" rx="19" fill="white" stroke="#93c5fd" stroke-width="3"/></g>
+<text x="222" y="583" text-anchor="middle" class="step">5</text><text x="222" y="612" text-anchor="middle" class="txt">User question</text><text x="222" y="639" text-anchor="middle" class="small">“What is ML?”</text>
+<path d="M333 603 H390" class="vArrow dash"/>
+<g class="card"><rect x="391" y="551" width="235" height="106" rx="19" fill="url(#violet)" stroke="#a78bfa" stroke-width="3"/></g>
+<text x="508" y="583" text-anchor="middle" class="step">6</text><text x="508" y="612" text-anchor="middle" class="txt">Embed question</text><text x="508" y="639" text-anchor="middle" class="small">Query → vector</text>
+<path d="M627 603 H682" class="vArrow dash"/>
+<g class="card"><rect x="683" y="551" width="251" height="106" rx="19" fill="url(#violet)" stroke="#a78bfa" stroke-width="3"/></g>
+<text x="808" y="583" text-anchor="middle" class="step">7</text><text x="808" y="612" text-anchor="middle" class="txt">Search / Retrieve</text><text x="808" y="639" text-anchor="middle" class="small">Find relevant chunks</text>
+<!-- database to search path -->
+<path d="M1295 327 H1357 V468 H808 V548" class="vArrow dash"/>
+<rect x="1072" y="440" width="235" height="40" rx="12" fill="white" stroke="#c4b5fd"/><text x="1189" y="466" text-anchor="middle" class="small">Search stored vectors</text>
+<!-- Retrieval to augment lower lane -->
+<path d="M808 658 V710 H438 V755" class="vArrow dash"/>
+<g class="card"><rect x="318" y="756" width="270" height="102" rx="19" fill="#fff7ed" stroke="#fdba74" stroke-width="3"/></g>
+<text x="453" y="787" text-anchor="middle" class="step">8</text><text x="453" y="814" text-anchor="middle" class="txt">Build augmented prompt</text><text x="453" y="842" text-anchor="middle" class="small">Question + retrieved text</text>
+<path d="M589 808 H656" class="vArrow dash"/>
+<g class="card pulse"><rect x="657" y="756" width="249" height="102" rx="19" fill="#dcfce7" stroke="#4ade80" stroke-width="3"/></g>
+<text x="782" y="787" text-anchor="middle" class="step">9</text><text x="782" y="814" text-anchor="middle" class="txt">LLM (GPT / Llama)</text><text x="782" y="842" text-anchor="middle" class="small">Writes the final answer</text>
+<path d="M907 808 H975" class="arrow dash"/>
+<g class="card"><rect x="976" y="756" width="325" height="102" rx="19" fill="url(#green)" stroke="#4ade80" stroke-width="3"/></g>
+<text x="1139" y="787" text-anchor="middle" class="step">10</text><text x="1139" y="814" text-anchor="middle" class="txt">Answer to student</text><text x="1139" y="842" text-anchor="middle" class="small">Optional: include citations</text>
+<!-- question -->
+<path d="M222 658 V808 H315" class="arrow" stroke-dasharray="7 10" opacity=".53"/>
+<text x="124" y="729" class="small">Original question</text>
+
+<!-- update -->
+<rect x="75" y="911" width="1350" height="80" rx="20" fill="#fff7ed" stroke="#fdba74" stroke-width="2"/>
+<text x="115" y="942" class="txt">C. KEEP KNOWLEDGE UPDATED</text>
+<text x="115" y="972" class="small">New or changed PDF → re-chunk → re-embed → update the vector database</text>
+<text x="113" y="1040" class="txt" fill="#6d28d9">REMEMBER:</text>
+<text x="330" y="1040" class="txt">Retriever FINDS information → LLM WRITES the answer.</text>
+<text x="750" y="1068" text-anchor="middle" class="legend">Note: RAG can improve grounding, but it does not guarantee correct answers. Animations show information flow.</text>
+</svg>
