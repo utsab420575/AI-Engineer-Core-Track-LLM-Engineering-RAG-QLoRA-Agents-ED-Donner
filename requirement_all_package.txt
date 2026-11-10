@@ -1,0 +1,7 @@
+# Install dependencies
+python-dotenv
+openai
+pandas
+requests
+
+

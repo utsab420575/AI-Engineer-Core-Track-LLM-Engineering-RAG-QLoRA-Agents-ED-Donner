@@ -1,0 +1,9 @@
+# Create virtual environment
+python -m venv .venv
+
+# Activate on Windows
+.venv\Scripts\activate
+
+# Install dependencies,in terminal just give bellow command
+#it will install all packages from what we mention in requirement_all_package.txt
+pip install -r requirements.txt
