@@ -1,0 +1,372 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 850" width="1200" height="850" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<defs><style>
+.mono{font-family:Consolas,Menlo,monospace}
+.lbl{font-size:13px;font-weight:700;fill:#5A6272;letter-spacing:.5px}
+.cap{font-size:15px;fill:#1F2430}
+.card{fill:#fff;stroke:#E2E5EA;stroke-width:1.5}
+</style>
+<marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto"><path d="M0,0L10,5L0,10z" fill="#F26B21"/></marker>
+</defs>
+<rect width="1200" height="850" fill="#F7F8FA"/>
+<rect width="1200" height="80" fill="#F26B21"/>
+<text x="40" y="44" font-size="28" font-weight="700" fill="#fff">LIVE: How tokens and token IDs are generated</text>
+<text x="40" y="68" font-size="14" fill="#FFE3D2">Animated, loops every 28 seconds · open in a browser</text>
+<circle cx="1120" cy="40" r="7" fill="#fff"><animate attributeName="opacity" values="1;0.2;1" dur="1.2s" repeatCount="indefinite"/></circle>
+<text x="1135" y="45" font-size="14" font-weight="700" fill="#fff">LIVE</text>
+<rect x="40" y="96" width="270" height="36" rx="18" fill="#E9EBEF"/>
+<rect x="40" y="96" width="270" height="36" rx="18" fill="#1F2430" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0000;0.0089;0.1196;0.1286;1.0000" values="0;0;1;1;0;0"/></rect>
+<text x="175" y="119" text-anchor="middle" font-size="14" font-weight="700" fill="#8A91A0">1  Type text</text>
+<text x="175" y="119" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" opacity="0">1  Type text<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0000;0.0089;0.1196;0.1286;1.0000" values="0;0;1;1;0;0"/></text>
+<rect x="325" y="96" width="270" height="36" rx="18" fill="#E9EBEF"/>
+<rect x="325" y="96" width="270" height="36" rx="18" fill="#1F2430" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.1286;0.1375;0.3839;0.3929;1.0000" values="0;0;1;1;0;0"/></rect>
+<text x="460" y="119" text-anchor="middle" font-size="14" font-weight="700" fill="#8A91A0">2  BPE merging</text>
+<text x="460" y="119" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" opacity="0">2  BPE merging<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.1286;0.1375;0.3839;0.3929;1.0000" values="0;0;1;1;0;0"/></text>
+<rect x="610" y="96" width="270" height="36" rx="18" fill="#E9EBEF"/>
+<rect x="610" y="96" width="270" height="36" rx="18" fill="#1F2430" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.3929;0.4018;0.6054;0.6143;1.0000" values="0;0;1;1;0;0"/></rect>
+<text x="745" y="119" text-anchor="middle" font-size="14" font-weight="700" fill="#8A91A0">3  ID lookup</text>
+<text x="745" y="119" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" opacity="0">3  ID lookup<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.3929;0.4018;0.6054;0.6143;1.0000" values="0;0;1;1;0;0"/></text>
+<rect x="895" y="96" width="270" height="36" rx="18" fill="#E9EBEF"/>
+<rect x="895" y="96" width="270" height="36" rx="18" fill="#1F2430" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6143;0.6232;0.9696;0.9786;1.0000" values="0;0;1;1;0;0"/></rect>
+<text x="1030" y="119" text-anchor="middle" font-size="14" font-weight="700" fill="#8A91A0">4  Predict next token</text>
+<text x="1030" y="119" text-anchor="middle" font-size="14" font-weight="700" fill="#fff" opacity="0">4  Predict next token<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6143;0.6232;0.9696;0.9786;1.0000" values="0;0;1;1;0;0"/></text>
+<rect x="40" y="146" width="850" height="50" rx="10" class="card"/>
+<text x="58" y="177" class="lbl">INPUT</text>
+<text x="120.0" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">W<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0107;0.0125;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="133.2" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">h<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0139;0.0157;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="146.4" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">a<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0171;0.0189;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="159.6" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">t<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0204;0.0221;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="172.8" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0"> <animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0236;0.0254;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="186.0" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">i<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0268;0.0286;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="199.2" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">s<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0300;0.0318;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="212.4" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0"> <animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0332;0.0350;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="225.6" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">t<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0364;0.0382;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="238.8" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">h<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0396;0.0414;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="252.0" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">e<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0429;0.0446;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="265.2" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0"> <animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0461;0.0479;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="278.4" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">c<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0493;0.0511;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="291.6" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">a<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0525;0.0543;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="304.8" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">p<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0557;0.0575;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="318.0" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">i<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0589;0.0607;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="331.2" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">t<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0621;0.0639;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="344.4" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">a<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0654;0.0671;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="357.6" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">l<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0686;0.0704;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="370.8" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0"> <animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0718;0.0736;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="384.0" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">o<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0750;0.0768;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="397.2" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">f<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0782;0.0800;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="410.4" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0"> <animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0814;0.0832;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="423.6" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">B<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0846;0.0864;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="436.8" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">a<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0879;0.0896;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="450.0" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">n<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0911;0.0929;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="463.2" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">g<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0943;0.0961;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="476.4" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">l<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0975;0.0993;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="489.6" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">a<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.1007;0.1025;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="502.8" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">d<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.1039;0.1057;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="516.0" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">e<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.1071;0.1089;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="529.2" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">s<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.1104;0.1121;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="542.4" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">h<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.1136;0.1154;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="555.6" y="179" class="mono" font-size="22" fill="#1F2430" opacity="0">?<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.1168;0.1186;0.9786;0.9804;1.0000" values="0;0;1;1;0;0"/></text>
+<rect x="120" y="160" width="2.5" height="26" fill="#F26B21"><animate attributeName="x" dur="28.0s" repeatCount="indefinite" calcMode="discrete" keyTimes="0.0000;0.0107;0.0139;0.0171;0.0204;0.0236;0.0268;0.0300;0.0332;0.0364;0.0396;0.0429;0.0461;0.0493;0.0525;0.0557;0.0589;0.0621;0.0654;0.0686;0.0718;0.0750;0.0782;0.0814;0.0846;0.0879;0.0911;0.0943;0.0975;0.1007;0.1039;0.1071;0.1104;0.1136;0.1168;0.1200;1.0000" values="120.0;120.0;133.2;146.4;159.6;172.8;186.0;199.2;212.4;225.6;238.8;252.0;265.2;278.4;291.6;304.8;318.0;331.2;344.4;357.6;370.8;384.0;397.2;410.4;423.6;436.8;450.0;463.2;476.4;489.6;502.8;516.0;529.2;542.4;555.6;568.8;568.8"/><animate attributeName="opacity" values="1;0;1" dur="0.8s" repeatCount="indefinite"/></rect>
+<text x="40" y="222" class="cap" font-weight="600" opacity="0">You type a question. The model cannot read letters, so it has to be converted.<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.0000;0.0089;0.1196;0.1286;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="40" y="222" class="cap" font-weight="600" opacity="0">Split into single characters (really bytes) → 34 pieces.<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.1286;0.1375;0.1768;0.1857;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="40" y="222" class="cap" font-weight="600" opacity="0">Merge round 1: frequent pairs join: W+h→Wh, a+t→at, h+e→he, s+h→sh …<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.1857;0.1946;0.2482;0.2571;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="40" y="222" class="cap" font-weight="600" opacity="0">Merge round 2: keep merging: Wh+at→What, ␣t+he→␣the, de+sh→desh …<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.2571;0.2661;0.3196;0.3286;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="40" y="222" class="cap" font-weight="600" opacity="0">No more merge rules apply → 8 tokens. (␣ = leading space is part of the token)<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.3286;0.3375;0.3839;0.3929;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="40" y="222" class="cap" font-weight="600" opacity="0">Each token is looked up in the fixed vocabulary table → its integer ID.<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.3929;0.4018;0.6054;0.6143;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="40" y="222" class="cap" font-weight="600" opacity="0">The model reads all IDs → scores every vocab entry → picks one → appends it → repeats.<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6143;0.6232;0.8482;0.8571;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="40" y="222" class="cap" font-weight="600" opacity="0">The model picks the special &lt;end&gt; token → generation stops.<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.8571;0.8661;0.9696;0.9786;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="40" y="242" class="lbl" opacity="0">TOKENIZER (BPE)<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.1286;0.1375;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/></text>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.1357;0.1446;0.1768;0.1857;1.0000" values="0;0;1;1;0;0"/>
+<rect x="42" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="52.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">W</text>
+<rect x="67" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="77.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">h</text>
+<rect x="92" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="102.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">a</text>
+<rect x="117" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="127.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">t</text>
+<rect x="142" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="152.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">␣</text>
+<rect x="167" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="177.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">i</text>
+<rect x="192" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="202.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">s</text>
+<rect x="217" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="227.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">␣</text>
+<rect x="242" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="252.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">t</text>
+<rect x="267" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="277.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">h</text>
+<rect x="292" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="302.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">e</text>
+<rect x="317" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="327.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">␣</text>
+<rect x="342" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="352.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">c</text>
+<rect x="367" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="377.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">a</text>
+<rect x="392" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="402.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">p</text>
+<rect x="417" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="427.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">i</text>
+<rect x="442" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="452.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">t</text>
+<rect x="467" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="477.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">a</text>
+<rect x="492" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="502.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">l</text>
+<rect x="517" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="527.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">␣</text>
+<rect x="542" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="552.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">o</text>
+<rect x="567" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="577.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">f</text>
+<rect x="592" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="602.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">␣</text>
+<rect x="617" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="627.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">B</text>
+<rect x="642" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="652.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">a</text>
+<rect x="667" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="677.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">n</text>
+<rect x="692" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="702.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">g</text>
+<rect x="717" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="727.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">l</text>
+<rect x="742" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="752.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">a</text>
+<rect x="767" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="777.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">d</text>
+<rect x="792" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="802.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">e</text>
+<rect x="817" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="827.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">s</text>
+<rect x="842" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="852.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">h</text>
+<rect x="867" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="877.5" y="274" text-anchor="middle" class="mono" font-size="14" fill="#1F2430">?</text>
+</g>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.1857;0.1946;0.2482;0.2571;1.0000" values="0;0;1;1;0;0"/>
+<rect x="42" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="65.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">Wh</text>
+<rect x="92" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="115.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">at</text>
+<rect x="142" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="165.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣i</text>
+<rect x="192" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="202.5" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">s</text>
+<rect x="217" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="240.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣t</text>
+<rect x="267" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="290.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">he</text>
+<rect x="317" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="340.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣c</text>
+<rect x="367" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="390.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">ap</text>
+<rect x="417" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="440.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">it</text>
+<rect x="467" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="490.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">al</text>
+<rect x="517" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="540.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣o</text>
+<rect x="567" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="577.5" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">f</text>
+<rect x="592" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="615.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣B</text>
+<rect x="642" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="665.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">an</text>
+<rect x="692" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="702.5" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">g</text>
+<rect x="717" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="740.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">la</text>
+<rect x="767" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="790.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">de</text>
+<rect x="817" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="840.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">sh</text>
+<rect x="867" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="877.5" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">?</text>
+</g>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.2571;0.2661;0.3196;0.3286;1.0000" values="0;0;1;1;0;0"/>
+<rect x="42" y="248" width="96" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="90.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">What</text>
+<rect x="142" y="248" width="71" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="177.5" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣is</text>
+<rect x="217" y="248" width="96" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="265.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣the</text>
+<rect x="317" y="248" width="96" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="365.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣cap</text>
+<rect x="417" y="248" width="96" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="465.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">ital</text>
+<rect x="517" y="248" width="71" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="552.5" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣of</text>
+<rect x="592" y="248" width="121" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="652.5" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣Bang</text>
+<rect x="717" y="248" width="46" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="740.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">la</text>
+<rect x="767" y="248" width="96" height="40" rx="7" fill="#FFE6D6" stroke="#F26B21" stroke-width="2"/>
+<text x="815.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">desh</text>
+<rect x="867" y="248" width="21" height="40" rx="7" fill="#EEF0F3"/>
+<text x="877.5" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">?</text>
+</g>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.3286;0.3375;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/>
+<rect x="42" y="248" width="96" height="40" rx="7" fill="#FFD9C2"/>
+<text x="90.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">What</text>
+<rect x="142" y="248" width="71" height="40" rx="7" fill="#C9E7FF"/>
+<text x="177.5" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣is</text>
+<rect x="217" y="248" width="96" height="40" rx="7" fill="#D4F2D2"/>
+<text x="265.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣the</text>
+<rect x="317" y="248" width="196" height="40" rx="7" fill="#EBDDFF"/>
+<text x="415.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣capital</text>
+<rect x="517" y="248" width="71" height="40" rx="7" fill="#FFF0B3"/>
+<text x="552.5" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣of</text>
+<rect x="592" y="248" width="171" height="40" rx="7" fill="#FFD1DC"/>
+<text x="677.5" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">␣Bangla</text>
+<rect x="767" y="248" width="96" height="40" rx="7" fill="#CFF1EE"/>
+<text x="815.0" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">desh</text>
+<rect x="867" y="248" width="21" height="40" rx="7" fill="#E6E0D4"/>
+<text x="877.5" y="274" text-anchor="middle" class="mono" font-size="15" fill="#1F2430">?</text>
+</g>
+<text x="893" y="274" font-size="12" font-weight="700" fill="#F26B21" opacity="0">8 tokens<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.3393;0.3482;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="950" y="242" class="lbl">VOCABULARY (token → ID)</text>
+<rect x="950" y="248" width="210" height="213" rx="8" class="card"/>
+<text x="964" y="268" class="mono" font-size="14" fill="#1F2430">.</text>
+<text x="1146" y="268" text-anchor="end" class="mono" font-size="14" fill="#5A6272">13</text>
+<text x="964" y="287" class="mono" font-size="14" fill="#1F2430">?</text>
+<text x="1146" y="287" text-anchor="end" class="mono" font-size="14" fill="#5A6272">30</text>
+<text x="964" y="306" class="mono" font-size="14" fill="#1F2430">␣the</text>
+<text x="1146" y="306" text-anchor="end" class="mono" font-size="14" fill="#5A6272">290</text>
+<text x="964" y="325" class="mono" font-size="14" fill="#1F2430">␣of</text>
+<text x="1146" y="325" text-anchor="end" class="mono" font-size="14" fill="#5A6272">328</text>
+<text x="964" y="344" class="mono" font-size="14" fill="#1F2430">␣is</text>
+<text x="1146" y="344" text-anchor="end" class="mono" font-size="14" fill="#5A6272">382</text>
+<text x="964" y="363" class="mono" font-size="14" fill="#1F2430">What</text>
+<text x="1146" y="363" text-anchor="end" class="mono" font-size="14" fill="#5A6272">3923</text>
+<text x="964" y="382" class="mono" font-size="14" fill="#1F2430">␣capital</text>
+<text x="1146" y="382" text-anchor="end" class="mono" font-size="14" fill="#5A6272">9029</text>
+<text x="964" y="401" class="mono" font-size="14" fill="#1F2430">desh</text>
+<text x="1146" y="401" text-anchor="end" class="mono" font-size="14" fill="#5A6272">31301</text>
+<text x="964" y="420" class="mono" font-size="14" fill="#1F2430">␣Bangla</text>
+<text x="1146" y="420" text-anchor="end" class="mono" font-size="14" fill="#5A6272">42563</text>
+<text x="964" y="439" class="mono" font-size="14" fill="#1F2430">Dhaka</text>
+<text x="1146" y="439" text-anchor="end" class="mono" font-size="14" fill="#5A6272">71234</text>
+<text x="964" y="456" class="mono" font-size="13" fill="#9AA1AE">… ~200,000 rows</text>
+<text x="40" y="312" class="lbl" opacity="0">TOKEN IDs<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.3929;0.4018;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/></text>
+<rect x="40" y="246" width="100" height="44" rx="8" fill="none" stroke="#F26B21" stroke-width="3" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4000;0.4043;0.4214;0.4257;1.0000" values="0;0;1;1;0;0"/></rect>
+<rect x="954" y="347" width="202" height="19" rx="4" fill="#F26B21" fill-opacity="0.18" stroke="#F26B21" stroke-width="2" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4000;0.4054;0.4214;0.4268;1.0000" values="0;0;1;1;0;0"/></rect>
+<path d="M90.0,290 L90.0,318" stroke="#F26B21" stroke-width="2" marker-end="url(#ar)" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4000;0.4043;0.4214;0.4257;1.0000" values="0;0;1;1;0;0"/></path>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4125;0.4214;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="42" y="320" width="96" height="34" rx="7" fill="#1F2430"/><text x="90.0" y="342" text-anchor="middle" class="mono" font-size="15" fill="#fff">3923</text></g>
+<rect x="140" y="246" width="75" height="44" rx="8" fill="none" stroke="#F26B21" stroke-width="3" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4268;0.4311;0.4482;0.4525;1.0000" values="0;0;1;1;0;0"/></rect>
+<rect x="954" y="328" width="202" height="19" rx="4" fill="#F26B21" fill-opacity="0.18" stroke="#F26B21" stroke-width="2" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4268;0.4321;0.4482;0.4536;1.0000" values="0;0;1;1;0;0"/></rect>
+<path d="M177.5,290 L177.5,318" stroke="#F26B21" stroke-width="2" marker-end="url(#ar)" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4268;0.4311;0.4482;0.4525;1.0000" values="0;0;1;1;0;0"/></path>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4393;0.4482;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="142" y="320" width="71" height="34" rx="7" fill="#1F2430"/><text x="177.5" y="342" text-anchor="middle" class="mono" font-size="13" fill="#fff">382</text></g>
+<rect x="215" y="246" width="100" height="44" rx="8" fill="none" stroke="#F26B21" stroke-width="3" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4536;0.4579;0.4750;0.4793;1.0000" values="0;0;1;1;0;0"/></rect>
+<rect x="954" y="290" width="202" height="19" rx="4" fill="#F26B21" fill-opacity="0.18" stroke="#F26B21" stroke-width="2" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4536;0.4589;0.4750;0.4804;1.0000" values="0;0;1;1;0;0"/></rect>
+<path d="M265.0,290 L265.0,318" stroke="#F26B21" stroke-width="2" marker-end="url(#ar)" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4536;0.4579;0.4750;0.4793;1.0000" values="0;0;1;1;0;0"/></path>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4661;0.4750;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="217" y="320" width="96" height="34" rx="7" fill="#1F2430"/><text x="265.0" y="342" text-anchor="middle" class="mono" font-size="15" fill="#fff">290</text></g>
+<rect x="315" y="246" width="200" height="44" rx="8" fill="none" stroke="#F26B21" stroke-width="3" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4804;0.4846;0.5018;0.5061;1.0000" values="0;0;1;1;0;0"/></rect>
+<rect x="954" y="366" width="202" height="19" rx="4" fill="#F26B21" fill-opacity="0.18" stroke="#F26B21" stroke-width="2" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4804;0.4857;0.5018;0.5071;1.0000" values="0;0;1;1;0;0"/></rect>
+<path d="M415.0,290 L415.0,318" stroke="#F26B21" stroke-width="2" marker-end="url(#ar)" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4804;0.4846;0.5018;0.5061;1.0000" values="0;0;1;1;0;0"/></path>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.4929;0.5018;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="317" y="320" width="196" height="34" rx="7" fill="#1F2430"/><text x="415.0" y="342" text-anchor="middle" class="mono" font-size="15" fill="#fff">9029</text></g>
+<rect x="515" y="246" width="75" height="44" rx="8" fill="none" stroke="#F26B21" stroke-width="3" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5071;0.5114;0.5286;0.5329;1.0000" values="0;0;1;1;0;0"/></rect>
+<rect x="954" y="309" width="202" height="19" rx="4" fill="#F26B21" fill-opacity="0.18" stroke="#F26B21" stroke-width="2" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5071;0.5125;0.5286;0.5339;1.0000" values="0;0;1;1;0;0"/></rect>
+<path d="M552.5,290 L552.5,318" stroke="#F26B21" stroke-width="2" marker-end="url(#ar)" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5071;0.5114;0.5286;0.5329;1.0000" values="0;0;1;1;0;0"/></path>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5196;0.5286;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="517" y="320" width="71" height="34" rx="7" fill="#1F2430"/><text x="552.5" y="342" text-anchor="middle" class="mono" font-size="13" fill="#fff">328</text></g>
+<rect x="590" y="246" width="175" height="44" rx="8" fill="none" stroke="#F26B21" stroke-width="3" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5339;0.5382;0.5554;0.5596;1.0000" values="0;0;1;1;0;0"/></rect>
+<rect x="954" y="404" width="202" height="19" rx="4" fill="#F26B21" fill-opacity="0.18" stroke="#F26B21" stroke-width="2" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5339;0.5393;0.5554;0.5607;1.0000" values="0;0;1;1;0;0"/></rect>
+<path d="M677.5,290 L677.5,318" stroke="#F26B21" stroke-width="2" marker-end="url(#ar)" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5339;0.5382;0.5554;0.5596;1.0000" values="0;0;1;1;0;0"/></path>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5464;0.5554;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="592" y="320" width="171" height="34" rx="7" fill="#1F2430"/><text x="677.5" y="342" text-anchor="middle" class="mono" font-size="15" fill="#fff">42563</text></g>
+<rect x="765" y="246" width="100" height="44" rx="8" fill="none" stroke="#F26B21" stroke-width="3" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5607;0.5650;0.5821;0.5864;1.0000" values="0;0;1;1;0;0"/></rect>
+<rect x="954" y="385" width="202" height="19" rx="4" fill="#F26B21" fill-opacity="0.18" stroke="#F26B21" stroke-width="2" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5607;0.5661;0.5821;0.5875;1.0000" values="0;0;1;1;0;0"/></rect>
+<path d="M815.0,290 L815.0,318" stroke="#F26B21" stroke-width="2" marker-end="url(#ar)" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5607;0.5650;0.5821;0.5864;1.0000" values="0;0;1;1;0;0"/></path>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5732;0.5821;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="767" y="320" width="96" height="34" rx="7" fill="#1F2430"/><text x="815.0" y="342" text-anchor="middle" class="mono" font-size="15" fill="#fff">31301</text></g>
+<rect x="865" y="246" width="25" height="44" rx="8" fill="none" stroke="#F26B21" stroke-width="3" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5875;0.5918;0.6089;0.6132;1.0000" values="0;0;1;1;0;0"/></rect>
+<rect x="954" y="271" width="202" height="19" rx="4" fill="#F26B21" fill-opacity="0.18" stroke="#F26B21" stroke-width="2" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5875;0.5929;0.6089;0.6143;1.0000" values="0;0;1;1;0;0"/></rect>
+<path d="M877.5,290 L877.5,318" stroke="#F26B21" stroke-width="2" marker-end="url(#ar)" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.5875;0.5918;0.6089;0.6132;1.0000" values="0;0;1;1;0;0"/></path>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6000;0.6089;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="867" y="320" width="21" height="34" rx="7" fill="#1F2430"/><text x="877.5" y="342" text-anchor="middle" class="mono" font-size="13" fill="#fff">30</text></g>
+<line x1="40" y1="466" x2="1160" y2="466" stroke="#E2E5EA" stroke-width="1.5"/>
+<text x="40" y="480" class="lbl">CONTEXT SENT TO THE MODEL (token IDs)</text>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6143;0.6232;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="40" y="490" width="74" height="34" rx="7" fill="#1F2430"/><text x="77" y="512" text-anchor="middle" class="mono" font-size="15" fill="#fff">3923</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6179;0.6268;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="122" y="490" width="74" height="34" rx="7" fill="#1F2430"/><text x="159" y="512" text-anchor="middle" class="mono" font-size="15" fill="#fff">382</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6214;0.6304;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="204" y="490" width="74" height="34" rx="7" fill="#1F2430"/><text x="241" y="512" text-anchor="middle" class="mono" font-size="15" fill="#fff">290</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6250;0.6339;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="286" y="490" width="74" height="34" rx="7" fill="#1F2430"/><text x="323" y="512" text-anchor="middle" class="mono" font-size="15" fill="#fff">9029</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6286;0.6375;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="368" y="490" width="74" height="34" rx="7" fill="#1F2430"/><text x="405" y="512" text-anchor="middle" class="mono" font-size="15" fill="#fff">328</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6321;0.6411;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="450" y="490" width="74" height="34" rx="7" fill="#1F2430"/><text x="487" y="512" text-anchor="middle" class="mono" font-size="15" fill="#fff">42563</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6357;0.6446;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="532" y="490" width="74" height="34" rx="7" fill="#1F2430"/><text x="569" y="512" text-anchor="middle" class="mono" font-size="15" fill="#fff">31301</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6393;0.6482;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="614" y="490" width="74" height="34" rx="7" fill="#1F2430"/><text x="651" y="512" text-anchor="middle" class="mono" font-size="15" fill="#fff">30</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.7250;0.7339;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="696" y="490" width="74" height="34" rx="7" fill="#F26B21"/><text x="733" y="512" text-anchor="middle" class="mono" font-size="15" fill="#fff">71234</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.8321;0.8411;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="778" y="490" width="74" height="34" rx="7" fill="#F26B21"/><text x="815" y="512" text-anchor="middle" class="mono" font-size="15" fill="#fff">13</text></g>
+<text x="868" y="512" font-size="13" fill="#5A6272" opacity="0">← grows by 1 each step<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.7250;0.7339;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/></text>
+<rect x="40" y="545" width="480" height="190" rx="12" fill="#1F2430"/>
+<text x="280" y="575" text-anchor="middle" font-size="17" font-weight="700" fill="#fff">Transformer (embedding → attention × N layers)</text>
+<rect x="70" y="592" width="420" height="22" rx="4" fill="#3A4256"/>
+<text x="280" y="607" text-anchor="middle" font-size="12" fill="#C9CED8">Layer 1: attention + feed-forward</text>
+<rect x="70" y="622" width="420" height="22" rx="4" fill="#3A4256"/>
+<text x="280" y="637" text-anchor="middle" font-size="12" fill="#C9CED8">Layer 2: attention + feed-forward</text>
+<rect x="70" y="652" width="420" height="22" rx="4" fill="#3A4256"/>
+<text x="280" y="667" text-anchor="middle" font-size="12" fill="#C9CED8">Layer 3: attention + feed-forward</text>
+<rect x="70" y="682" width="420" height="22" rx="4" fill="#3A4256"/>
+<text x="280" y="697" text-anchor="middle" font-size="12" fill="#C9CED8">… Layer N: attention + feed-forward</text>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6286;0.6375;0.8929;0.9018;1.0000" values="0;0;1;1;0;0"/><rect x="70" y="590" width="420" height="26" rx="4" fill="#F26B21" fill-opacity="0.35"><animate attributeName="y" values="590;680;590" dur="1s" repeatCount="indefinite"/></rect></g>
+<text x="280" y="725" text-anchor="middle" font-size="12" fill="#FFB98F" opacity="0">thinking…<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6286;0.6375;0.8929;0.9018;1.0000" values="0;0;1;1;0;0"/></text>
+<path d="M525,640 L570,640" stroke="#F26B21" stroke-width="2.5" marker-end="url(#ar)"/>
+<rect x="580" y="545" width="580" height="190" rx="12" class="card"/>
+<text x="600" y="570" class="lbl">NEXT-TOKEN PROBABILITIES</text>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6429;0.6500;0.7446;0.7518;1.0000" values="0;0;1;1;0;0"/>
+<text x="1145" y="570" text-anchor="end" font-size="12" fill="#9AA1AE">step 1</text>
+<text x="600" y="603" class="mono" font-size="14" fill="#1F2430">Dhaka</text>
+<rect x="720" y="588" width="0" height="22" rx="4" fill="#F26B21"><animate attributeName="width" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6500;0.6821;0.7446;0.7518;1.0000" values="0;0;258.0;258.0;0;0"/></rect>
+<text x="986" y="604" class="mono" font-size="13" fill="#3A4150" opacity="0">86%<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6786;0.6839;0.7446;0.7500;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="600" y="639" class="mono" font-size="14" fill="#1F2430">The</text>
+<rect x="720" y="624" width="0" height="22" rx="4" fill="#F9C2A1"><animate attributeName="width" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6536;0.6857;0.7446;0.7518;1.0000" values="0;0;27.0;27.0;0;0"/></rect>
+<text x="755" y="640" class="mono" font-size="13" fill="#3A4150" opacity="0">9%<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6786;0.6839;0.7446;0.7500;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="600" y="675" class="mono" font-size="14" fill="#1F2430">Bangladesh</text>
+<rect x="720" y="660" width="0" height="22" rx="4" fill="#F9C2A1"><animate attributeName="width" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6571;0.6893;0.7446;0.7518;1.0000" values="0;0;6.0;6.0;0;0"/></rect>
+<text x="734" y="676" class="mono" font-size="13" fill="#3A4150" opacity="0">2%<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6786;0.6839;0.7446;0.7500;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="600" y="711" class="mono" font-size="14" fill="#1F2430">It</text>
+<rect x="720" y="696" width="0" height="22" rx="4" fill="#F9C2A1"><animate attributeName="width" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6607;0.6929;0.7446;0.7518;1.0000" values="0;0;3.0;3.0;0;0"/></rect>
+<text x="731" y="712" class="mono" font-size="13" fill="#3A4150" opacity="0">1%<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6786;0.6839;0.7446;0.7500;1.0000" values="0;0;1;1;0;0"/></text>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6964;0.7018;0.7446;0.7500;1.0000" values="0;0;1;1;0;0"/><rect x="594" y="584" width="552" height="30" rx="6" fill="none" stroke="#F26B21" stroke-width="2.5"/><text x="1140" y="604" text-anchor="end" font-size="13" font-weight="700" fill="#F26B21">✓ picked</text></g>
+</g>
+<rect x="954" y="423" width="202" height="19" rx="4" fill="#F26B21" fill-opacity="0.18" stroke="#F26B21" stroke-width="2" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.7000;0.7054;0.7357;0.7411;1.0000" values="0;0;1;1;0;0"/></rect>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.7500;0.7571;0.8518;0.8589;1.0000" values="0;0;1;1;0;0"/>
+<text x="1145" y="570" text-anchor="end" font-size="12" fill="#9AA1AE">step 2</text>
+<text x="600" y="603" class="mono" font-size="14" fill="#1F2430">.</text>
+<rect x="720" y="588" width="0" height="22" rx="4" fill="#F26B21"><animate attributeName="width" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.7571;0.7893;0.8518;0.8589;1.0000" values="0;0;222.0;222.0;0;0"/></rect>
+<text x="950" y="604" class="mono" font-size="13" fill="#3A4150" opacity="0">74%<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.7857;0.7911;0.8518;0.8571;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="600" y="639" class="mono" font-size="14" fill="#1F2430">\n</text>
+<rect x="720" y="624" width="0" height="22" rx="4" fill="#F9C2A1"><animate attributeName="width" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.7607;0.7929;0.8518;0.8589;1.0000" values="0;0;36.0;36.0;0;0"/></rect>
+<text x="764" y="640" class="mono" font-size="13" fill="#3A4150" opacity="0">12%<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.7857;0.7911;0.8518;0.8571;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="600" y="675" class="mono" font-size="14" fill="#1F2430">!</text>
+<rect x="720" y="660" width="0" height="22" rx="4" fill="#F9C2A1"><animate attributeName="width" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.7643;0.7964;0.8518;0.8589;1.0000" values="0;0;18.0;18.0;0;0"/></rect>
+<text x="746" y="676" class="mono" font-size="13" fill="#3A4150" opacity="0">6%<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.7857;0.7911;0.8518;0.8571;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="600" y="711" class="mono" font-size="14" fill="#1F2430">,</text>
+<rect x="720" y="696" width="0" height="22" rx="4" fill="#F9C2A1"><animate attributeName="width" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.7679;0.8000;0.8518;0.8589;1.0000" values="0;0;12.0;12.0;0;0"/></rect>
+<text x="740" y="712" class="mono" font-size="13" fill="#3A4150" opacity="0">4%<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.7857;0.7911;0.8518;0.8571;1.0000" values="0;0;1;1;0;0"/></text>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.8036;0.8089;0.8518;0.8571;1.0000" values="0;0;1;1;0;0"/><rect x="594" y="584" width="552" height="30" rx="6" fill="none" stroke="#F26B21" stroke-width="2.5"/><text x="1140" y="604" text-anchor="end" font-size="13" font-weight="700" fill="#F26B21">✓ picked</text></g>
+</g>
+<rect x="954" y="252" width="202" height="19" rx="4" fill="#F26B21" fill-opacity="0.18" stroke="#F26B21" stroke-width="2" opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.8071;0.8125;0.8429;0.8482;1.0000" values="0;0;1;1;0;0"/></rect>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.8571;0.8643;0.9786;0.9857;1.0000" values="0;0;1;1;0;0"/>
+<text x="1145" y="570" text-anchor="end" font-size="12" fill="#9AA1AE">step 3</text>
+<text x="600" y="603" class="mono" font-size="14" fill="#1F2430">&lt;end&gt;</text>
+<rect x="720" y="588" width="0" height="22" rx="4" fill="#F26B21"><animate attributeName="width" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.8643;0.8964;0.9786;0.9857;1.0000" values="0;0;273.0;273.0;0;0"/></rect>
+<text x="1001" y="604" class="mono" font-size="13" fill="#3A4150" opacity="0">91%<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.8929;0.8982;0.9786;0.9839;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="600" y="639" class="mono" font-size="14" fill="#1F2430">␣It</text>
+<rect x="720" y="624" width="0" height="22" rx="4" fill="#F9C2A1"><animate attributeName="width" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.8679;0.9000;0.9786;0.9857;1.0000" values="0;0;12.0;12.0;0;0"/></rect>
+<text x="740" y="640" class="mono" font-size="13" fill="#3A4150" opacity="0">4%<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.8929;0.8982;0.9786;0.9839;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="600" y="675" class="mono" font-size="14" fill="#1F2430">␣Dhaka</text>
+<rect x="720" y="660" width="0" height="22" rx="4" fill="#F9C2A1"><animate attributeName="width" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.8714;0.9036;0.9786;0.9857;1.0000" values="0;0;6.0;6.0;0;0"/></rect>
+<text x="734" y="676" class="mono" font-size="13" fill="#3A4150" opacity="0">2%<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.8929;0.8982;0.9786;0.9839;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="600" y="711" class="mono" font-size="14" fill="#1F2430">␣The</text>
+<rect x="720" y="696" width="0" height="22" rx="4" fill="#F9C2A1"><animate attributeName="width" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.8750;0.9071;0.9786;0.9857;1.0000" values="0;0;3.0;3.0;0;0"/></rect>
+<text x="731" y="712" class="mono" font-size="13" fill="#3A4150" opacity="0">1%<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.8929;0.8982;0.9786;0.9839;1.0000" values="0;0;1;1;0;0"/></text>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.9107;0.9161;0.9786;0.9839;1.0000" values="0;0;1;1;0;0"/><rect x="594" y="584" width="552" height="30" rx="6" fill="none" stroke="#F26B21" stroke-width="2.5"/><text x="1140" y="604" text-anchor="end" font-size="13" font-weight="700" fill="#F26B21">✓ picked</text></g>
+</g>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.9036;0.9125;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="840" y="553" width="200" height="24" rx="12" fill="#1F2430"/><text x="940" y="570" text-anchor="middle" font-size="13" font-weight="700" fill="#fff">■ STOP: generation done</text></g>
+<rect x="40" y="752" width="1120" height="54" rx="10" class="card"/>
+<text x="58" y="785" class="lbl">OUTPUT</text>
+<text x="140" y="786" class="mono" font-size="20" fill="#9AA1AE" opacity="0">What is the capital of Bangladesh?<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6143;0.6232;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/></text>
+<text x="569" y="786" font-size="20" fill="#9AA1AE" opacity="0">→<animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.6143;0.6232;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/></text>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.7250;0.7339;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="603.4" y="764" width="60.5" height="30" rx="5" fill="#F26B21" fill-opacity="0.15"/><text x="603.4" y="786" class="mono" font-size="20" fill="#F26B21" font-weight="700" xml:space="preserve">Dhaka</text></g>
+<g opacity="0"><animate attributeName="opacity" dur="28.0s" repeatCount="indefinite" keyTimes="0.0000;0.8321;0.8411;0.9786;0.9875;1.0000" values="0;0;1;1;0;0"/><rect x="663.9" y="764" width="12.1" height="30" rx="5" fill="#F26B21" fill-opacity="0.15"/><text x="663.9" y="786" class="mono" font-size="20" fill="#F26B21" font-weight="700" xml:space="preserve">.</text></g>
+<text x="1140" y="786" text-anchor="end" font-size="13" fill="#9AA1AE">orange = generated by the model</text>
+<text x="600" y="835" text-anchor="middle" font-size="12" fill="#9AA1AE">Token splits, IDs and probabilities are illustrative. Every model family has its own tokenizer and vocabulary.</text>
+</svg>

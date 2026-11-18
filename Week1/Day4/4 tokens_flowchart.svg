@@ -1,0 +1,344 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1400 2390" width="1400" height="2390" font-family="Segoe UI, Helvetica, Arial, sans-serif">
+<defs>
+<marker id="ar" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0,0L10,5L0,10z" fill="#1F2430"/></marker>
+<marker id="ao" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="9" markerHeight="9" orient="auto"><path d="M0,0L10,5L0,10z" fill="#F26B21"/></marker>
+</defs>
+<rect width="1400" height="2390" fill="#F7F8FA"/>
+<rect width="1400" height="92" fill="#F26B21"/>
+<text x="40" y="48" font-size="32" font-weight="700" fill="#fff">Tokens: from characters to IDs to answers</text>
+<text x="40" y="76" font-size="16" fill="#FFE3D2">Example used throughout: "What is the capital of Bangladesh?" → "Dhaka."</text>
+<text x="40" y="140" font-size="24" font-weight="700" fill="#1F2430">Part A · How text splitting evolved</text>
+<line x1="60" y1="172" x2="1340" y2="172" stroke="#F26B21" stroke-width="3" marker-end="url(#ao)"/>
+<circle cx="70" cy="172" r="8" fill="#F26B21"/><text x="86" y="164" font-size="13" font-weight="700" fill="#F26B21">Early neural nets (char-RNNs)</text>
+<circle cx="510" cy="172" r="8" fill="#F26B21"/><text x="526" y="164" font-size="13" font-weight="700" fill="#F26B21">2013–2016 (word2vec, early seq2seq)</text>
+<circle cx="950" cy="172" r="8" fill="#F26B21"/><text x="966" y="164" font-size="13" font-weight="700" fill="#F26B21">2016 → today (GPT, Claude, Llama…)</text>
+<rect x="40" y="200" width="440" height="470" rx="14" fill="#fff" stroke="#E2E5EA" stroke-width="1.5"/>
+<text x="60" y="236" font-size="20" font-weight="700" fill="#1F2430">1 · Character level</text>
+<text x="60" y="258" font-size="14" fill="#5A6272">Predict the next character</text>
+<rect x="60" y="276" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="74" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">W</text>
+<rect x="92" y="276" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="106" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">h</text>
+<rect x="124" y="276" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="138" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">a</text>
+<rect x="156" y="276" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="170" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">t</text>
+<rect x="188" y="276" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="202" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣</text>
+<rect x="220" y="276" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="234" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">i</text>
+<rect x="252" y="276" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="266" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">s</text>
+<rect x="284" y="276" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="298" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣</text>
+<rect x="316" y="276" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="330" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">t</text>
+<rect x="348" y="276" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="362" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">h</text>
+<rect x="380" y="276" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="394" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">e</text>
+<rect x="412" y="276" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="426" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣</text>
+<rect x="60" y="310" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="74" y="329" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">c</text>
+<rect x="92" y="310" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="106" y="329" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">a</text>
+<rect x="124" y="310" width="28" height="28" rx="6" fill="#EEF0F3"/>
+<text x="138" y="329" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">…</text>
+<text x="60" y="362" font-size="13" font-weight="700" fill="#F26B21">→ 34 pieces</text>
+<rect x="60" y="390" width="400" height="56" rx="8" fill="#F7F8FA"/>
+<text x="74" y="413" font-size="13" fill="#5A6272">Vocabulary size</text><text x="446" y="413" text-anchor="end" font-size="13" font-weight="700" fill="#1F2430">~100–300</text>
+<text x="74" y="435" font-size="13" fill="#5A6272">Sequence length</text><text x="446" y="435" text-anchor="end" font-size="13" font-weight="700" fill="#1F2430">Very long (34)</text>
+<text x="62" y="474" font-size="14" fill="#1E8449" font-weight="700">✓</text><text x="82" y="474" font-size="14" fill="#3A4150">Tiny vocabulary</text>
+<text x="62" y="498" font-size="14" fill="#1E8449" font-weight="700">✓</text><text x="82" y="498" font-size="14" fill="#3A4150">No word is ever unknown</text>
+<text x="62" y="522" font-size="14" fill="#C0392B" font-weight="700">✗</text><text x="82" y="522" font-size="14" fill="#3A4150">Very long sequences → slow</text>
+<text x="62" y="546" font-size="14" fill="#C0392B" font-weight="700">✗</text><text x="82" y="546" font-size="14" fill="#3A4150">Network must learn spelling → words → meaning</text>
+<text x="62" y="570" font-size="14" fill="#C0392B" font-weight="700">✗</text><text x="82" y="570" font-size="14" fill="#3A4150">Expects too much from the network</text>
+<rect x="60" y="620" width="400" height="34" rx="8" fill="#C0392B" fill-opacity="0.1"/>
+<text x="260.0" y="642" text-anchor="middle" font-size="14" font-weight="700" fill="#C0392B">Too hard to learn from</text>
+<line x1="482" y1="435.0" x2="516" y2="435.0" stroke="#1F2430" stroke-width="2.5" marker-end="url(#ar)"/>
+<rect x="480" y="200" width="440" height="470" rx="14" fill="#fff" stroke="#E2E5EA" stroke-width="1.5"/>
+<text x="500" y="236" font-size="20" font-weight="700" fill="#1F2430">2 · Word level</text>
+<text x="500" y="258" font-size="14" fill="#5A6272">Predict the next word</text>
+<rect x="500" y="276" width="44" height="28" rx="6" fill="#E3ECF7"/>
+<text x="522" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">What</text>
+<rect x="548" y="276" width="29" height="28" rx="6" fill="#E3ECF7"/>
+<text x="563" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">is</text>
+<rect x="582" y="276" width="37" height="28" rx="6" fill="#E3ECF7"/>
+<text x="600" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">the</text>
+<rect x="622" y="276" width="67" height="28" rx="6" fill="#E3ECF7"/>
+<text x="656" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">capital</text>
+<rect x="694" y="276" width="29" height="28" rx="6" fill="#E3ECF7"/>
+<text x="708" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">of</text>
+<rect x="727" y="276" width="90" height="28" rx="6" fill="#E3ECF7"/>
+<text x="772" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">Bangladesh</text>
+<rect x="821" y="276" width="28" height="28" rx="6" fill="#E3ECF7"/>
+<text x="835" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">?</text>
+<text x="500" y="328" font-size="13" font-weight="700" fill="#F26B21">→ 7 pieces</text>
+<rect x="500" y="390" width="400" height="56" rx="8" fill="#F7F8FA"/>
+<text x="514" y="413" font-size="13" fill="#5A6272">Vocabulary size</text><text x="886" y="413" text-anchor="end" font-size="13" font-weight="700" fill="#1F2430">50k – 1M+ (capped)</text>
+<text x="514" y="435" font-size="13" fill="#5A6272">Sequence length</text><text x="886" y="435" text-anchor="end" font-size="13" font-weight="700" fill="#1F2430">Short (7)</text>
+<text x="502" y="474" font-size="14" fill="#1E8449" font-weight="700">✓</text><text x="522" y="474" font-size="14" fill="#3A4150">Each piece has meaning</text>
+<text x="502" y="498" font-size="14" fill="#1E8449" font-weight="700">✓</text><text x="522" y="498" font-size="14" fill="#3A4150">Short sequences, easy to learn</text>
+<text x="502" y="522" font-size="14" fill="#C0392B" font-weight="700">✗</text><text x="522" y="522" font-size="14" fill="#3A4150">Enormous vocabulary</text>
+<text x="502" y="546" font-size="14" fill="#C0392B" font-weight="700">✗</text><text x="522" y="546" font-size="14" fill="#3A4150">Rare words, typos, names → &lt;UNK&gt;</text>
+<text x="502" y="570" font-size="14" fill="#C0392B" font-weight="700">✗</text><text x="522" y="570" font-size="14" fill="#3A4150">run / runs / running = unrelated entries</text>
+<rect x="500" y="620" width="400" height="34" rx="8" fill="#C0392B" fill-opacity="0.1"/>
+<text x="700.0" y="642" text-anchor="middle" font-size="14" font-weight="700" fill="#C0392B">Rare words get lost</text>
+<line x1="922" y1="435.0" x2="956" y2="435.0" stroke="#1F2430" stroke-width="2.5" marker-end="url(#ar)"/>
+<rect x="920" y="200" width="440" height="470" rx="14" fill="#fff" stroke="#F26B21" stroke-width="3"/>
+<text x="940" y="236" font-size="20" font-weight="700" fill="#1F2430">3 · Subword tokens (BPE)</text>
+<text x="940" y="258" font-size="14" fill="#5A6272">Predict the next token</text>
+<rect x="1248" y="218" width="96" height="24" rx="12" fill="#F26B21"/><text x="1296" y="235" text-anchor="middle" font-size="12" font-weight="700" fill="#fff">USED TODAY</text>
+<rect x="940" y="276" width="44" height="28" rx="6" fill="#FFD9C2"/>
+<text x="962" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">What</text>
+<rect x="988" y="276" width="37" height="28" rx="6" fill="#C9E7FF"/>
+<text x="1007" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣is</text>
+<rect x="1029" y="276" width="44" height="28" rx="6" fill="#D4F2D2"/>
+<text x="1051" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣the</text>
+<rect x="1078" y="276" width="75" height="28" rx="6" fill="#EBDDFF"/>
+<text x="1115" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣capital</text>
+<rect x="1156" y="276" width="37" height="28" rx="6" fill="#FFF0B3"/>
+<text x="1175" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣of</text>
+<rect x="1197" y="276" width="67" height="28" rx="6" fill="#FFD1DC"/>
+<text x="1231" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣Bangla</text>
+<rect x="1268" y="276" width="44" height="28" rx="6" fill="#CFF1EE"/>
+<text x="1291" y="295" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">desh</text>
+<rect x="940" y="310" width="28" height="28" rx="6" fill="#E6E0D4"/>
+<text x="954" y="329" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">?</text>
+<text x="940" y="362" font-size="13" font-weight="700" fill="#F26B21">→ 8 tokens</text>
+<rect x="940" y="390" width="400" height="56" rx="8" fill="#F7F8FA"/>
+<text x="954" y="413" font-size="13" fill="#5A6272">Vocabulary size</text><text x="1326" y="413" text-anchor="end" font-size="13" font-weight="700" fill="#1F2430">~32k – 200k</text>
+<text x="954" y="435" font-size="13" fill="#5A6272">Sequence length</text><text x="1326" y="435" text-anchor="end" font-size="13" font-weight="700" fill="#1F2430">Short (8)</text>
+<text x="942" y="474" font-size="14" fill="#1E8449" font-weight="700">✓</text><text x="962" y="474" font-size="14" fill="#3A4150">Manageable vocabulary</text>
+<text x="942" y="498" font-size="14" fill="#1E8449" font-weight="700">✓</text><text x="962" y="498" font-size="14" fill="#3A4150">Common words = 1 token</text>
+<text x="942" y="522" font-size="14" fill="#1E8449" font-weight="700">✓</text><text x="962" y="522" font-size="14" fill="#3A4150">Rare words = known pieces (Bangla+desh)</text>
+<text x="942" y="546" font-size="14" fill="#1E8449" font-weight="700">✓</text><text x="962" y="546" font-size="14" fill="#3A4150">Shares stems: run + ning</text>
+<text x="942" y="570" font-size="14" fill="#C0392B" font-weight="700">✗</text><text x="962" y="570" font-size="14" fill="#3A4150">Slightly longer than words</text>
+<rect x="940" y="620" width="400" height="34" rx="8" fill="#1E8449" fill-opacity="0.1"/>
+<text x="1140.0" y="642" text-anchor="middle" font-size="14" font-weight="700" fill="#1E8449">The breakthrough, used today</text>
+<rect x="40" y="690" width="1320" height="50" rx="10" fill="#FFF4EC" stroke="#F8C4A4"/>
+<text x="700" y="721" text-anchor="middle" font-size="15" fill="#1F2430"><tspan font-weight="700">The trade-off:</tspan> smaller pieces = smaller vocabulary but longer sequences · bigger pieces = shorter sequences but huge vocabulary. <tspan font-weight="700" fill="#F26B21">Subwords balance both.</tspan></text>
+<text x="40" y="800" font-size="24" font-weight="700" fill="#1F2430">Part B · The full token pipeline, step by step</text>
+<text x="40" y="826" font-size="14" fill="#5A6272">Left: the flow · Middle: what happens · Right: our example</text>
+<rect x="40" y="842" width="1320" height="686" rx="14" fill="#2F7BD8" fill-opacity="0.05" stroke="#2F7BD8" stroke-opacity="0.35" stroke-dasharray="6 5"/>
+<text transform="translate(66,1185.0) rotate(-90)" text-anchor="middle" font-size="14" font-weight="700" letter-spacing="2" fill="#2F7BD8">TOKENIZER</text>
+<rect x="40" y="1542" width="1320" height="406" rx="14" fill="#F26B21" fill-opacity="0.05" stroke="#F26B21" stroke-opacity="0.35" stroke-dasharray="6 5"/>
+<text transform="translate(66,1745.0) rotate(-90)" text-anchor="middle" font-size="14" font-weight="700" letter-spacing="2" fill="#F26B21">MODEL</text>
+<rect x="40" y="1962" width="1320" height="266" rx="14" fill="#1E8449" fill-opacity="0.05" stroke="#1E8449" stroke-opacity="0.35" stroke-dasharray="6 5"/>
+<text transform="translate(66,2095.0) rotate(-90)" text-anchor="middle" font-size="14" font-weight="700" letter-spacing="2" fill="#1E8449">OUTPUT</text>
+<text x="1350" y="1520" text-anchor="end" font-size="12" font-weight="700" fill="#2F7BD8">Steps 1–5 run before the model: no AI, just rules + a lookup table</text>
+<rect x="90" y="850" width="280" height="64" rx="12" fill="#1F2430"/>
+<circle cx="120" cy="882.0" r="16" fill="#2F7BD8"/><text x="120" y="887.0" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">1</text>
+<text x="146" y="887.0" font-size="16" fill="#fff" font-weight="700"><tspan x="146" dy="0">Input text</tspan></text>
+<line x1="230.0" y1="916" x2="230.0" y2="986" stroke="#1F2430" stroke-width="2.5" marker-end="url(#ar)"/>
+<text x="425" y="870" font-size="14" fill="#3A4150" font-weight="400"><tspan x="425" dy="0">You type a question. To a computer this is just a string of</tspan><tspan x="425" dy="20">characters, stored as UTF-8 bytes (numbers 0–255). A neural</tspan><tspan x="425" dy="20">network can't use text directly; it needs IDs from a fixed list.</tspan></text>
+<text x="920" y="874" font-size="16" font-weight="600" fill="#1F2430">"What is the capital of Bangladesh?"</text>
+<text x="920" y="900" font-size="13" fill="#5A6272">as bytes:</text>
+<rect x="984" y="884" width="25" height="24" rx="6" fill="#EEF0F3"/>
+<text x="996" y="900" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">57</text>
+<rect x="1013" y="884" width="25" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1026" y="900" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">68</text>
+<rect x="1042" y="884" width="25" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1054" y="900" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">61</text>
+<rect x="1071" y="884" width="25" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1084" y="900" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">74</text>
+<rect x="1100" y="884" width="25" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1112" y="900" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">20</text>
+<rect x="1129" y="884" width="25" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1142" y="900" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">69</text>
+<rect x="1158" y="884" width="25" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1170" y="900" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">73</text>
+<rect x="1187" y="884" width="24" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1199" y="900" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">…</text>
+<text x="920" y="934" font-size="12" fill="#9AA1AE">W=57  h=68  a=61  t=74  space=20 (hex) · 34 characters</text>
+<rect x="90" y="990" width="280" height="64" rx="12" fill="#1F2430"/>
+<circle cx="120" cy="1022.0" r="16" fill="#2F7BD8"/><text x="120" y="1027.0" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">2</text>
+<text x="146" y="1027.0" font-size="16" fill="#fff" font-weight="700"><tspan x="146" dy="0">Pre-split into chunks</tspan></text>
+<line x1="230.0" y1="1056" x2="230.0" y2="1126" stroke="#1F2430" stroke-width="2.5" marker-end="url(#ar)"/>
+<text x="425" y="1010" font-size="14" fill="#3A4150" font-weight="400"><tspan x="425" dy="0">A simple rule (regex) first cuts the text at spaces and</tspan><tspan x="425" dy="20">punctuation, so merges never cross word boundaries. The space is</tspan><tspan x="425" dy="20">kept on the FRONT of the next word (␣).</tspan></text>
+<rect x="920" y="1000" width="42" height="28" rx="6" fill="#E3ECF7"/>
+<text x="941" y="1019" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">What</text>
+<rect x="966" y="1000" width="35" height="28" rx="6" fill="#E3ECF7"/>
+<text x="984" y="1019" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣is</text>
+<rect x="1005" y="1000" width="42" height="28" rx="6" fill="#E3ECF7"/>
+<text x="1026" y="1019" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣the</text>
+<rect x="1052" y="1000" width="73" height="28" rx="6" fill="#E3ECF7"/>
+<text x="1088" y="1019" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣capital</text>
+<rect x="1128" y="1000" width="35" height="28" rx="6" fill="#E3ECF7"/>
+<text x="1146" y="1019" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣of</text>
+<rect x="1167" y="1000" width="96" height="28" rx="6" fill="#E3ECF7"/>
+<text x="1215" y="1019" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣Bangladesh</text>
+<rect x="1267" y="1000" width="28" height="28" rx="6" fill="#E3ECF7"/>
+<text x="1281" y="1019" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">?</text>
+<text x="920" y="1076" font-size="12" fill="#9AA1AE">7 chunks · BPE now works inside each chunk</text>
+<rect x="90" y="1130" width="280" height="64" rx="12" fill="#1F2430"/>
+<circle cx="120" cy="1162.0" r="16" fill="#2F7BD8"/><text x="120" y="1167.0" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">3</text>
+<text x="146" y="1167.0" font-size="16" fill="#fff" font-weight="700"><tspan x="146" dy="0">BPE merging</tspan></text>
+<line x1="230.0" y1="1196" x2="230.0" y2="1266" stroke="#1F2430" stroke-width="2.5" marker-end="url(#ar)"/>
+<text x="425" y="1150" font-size="14" fill="#3A4150" font-weight="400"><tspan x="425" dy="0">Each chunk starts as single bytes. The tokenizer applies its</tspan><tspan x="425" dy="20">learned merge rules (most frequent pairs from training data, in</tspan><tspan x="425" dy="20">ranked order) again and again until no rule fits.</tspan></text>
+<text x="920" y="1152" font-size="12" fill="#5A6272">bytes</text>
+<rect x="980" y="1134" width="24" height="24" rx="6" fill="#EEF0F3"/>
+<text x="992" y="1150" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">␣</text>
+<rect x="1007" y="1134" width="24" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1019" y="1150" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">B</text>
+<rect x="1034" y="1134" width="24" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1046" y="1150" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">a</text>
+<rect x="1061" y="1134" width="24" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1073" y="1150" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">n</text>
+<rect x="1088" y="1134" width="24" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1100" y="1150" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">g</text>
+<rect x="1115" y="1134" width="24" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1127" y="1150" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">l</text>
+<rect x="1142" y="1134" width="24" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1154" y="1150" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">a</text>
+<rect x="1169" y="1134" width="24" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1181" y="1150" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">d</text>
+<rect x="1196" y="1134" width="24" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1208" y="1150" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">e</text>
+<rect x="1223" y="1134" width="24" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1235" y="1150" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">s</text>
+<rect x="1250" y="1134" width="24" height="24" rx="6" fill="#EEF0F3"/>
+<text x="1262" y="1150" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">h</text>
+<text x="920" y="1182" font-size="12" fill="#5A6272">round 1</text>
+<rect x="980" y="1164" width="24" height="24" rx="6" fill="#FFE6D6"/>
+<text x="992" y="1180" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">␣B</text>
+<rect x="1007" y="1164" width="24" height="24" rx="6" fill="#FFE6D6"/>
+<text x="1019" y="1180" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">an</text>
+<rect x="1034" y="1164" width="24" height="24" rx="6" fill="#FFE6D6"/>
+<text x="1046" y="1180" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">g</text>
+<rect x="1061" y="1164" width="24" height="24" rx="6" fill="#FFE6D6"/>
+<text x="1073" y="1180" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">la</text>
+<rect x="1088" y="1164" width="24" height="24" rx="6" fill="#FFE6D6"/>
+<text x="1100" y="1180" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">de</text>
+<rect x="1115" y="1164" width="24" height="24" rx="6" fill="#FFE6D6"/>
+<text x="1127" y="1180" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">sh</text>
+<text x="920" y="1212" font-size="12" fill="#5A6272">round 2</text>
+<rect x="980" y="1194" width="45" height="24" rx="6" fill="#FFE6D6"/>
+<text x="1002" y="1210" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">␣Bang</text>
+<rect x="1028" y="1194" width="24" height="24" rx="6" fill="#FFE6D6"/>
+<text x="1040" y="1210" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">la</text>
+<rect x="1055" y="1194" width="38" height="24" rx="6" fill="#FFE6D6"/>
+<text x="1074" y="1210" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">desh</text>
+<text x="920" y="1242" font-size="12" fill="#5A6272">final</text>
+<rect x="980" y="1224" width="60" height="24" rx="6" fill="#FFD1DC"/>
+<text x="1010" y="1240" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">␣Bangla</text>
+<rect x="1043" y="1224" width="38" height="24" rx="6" fill="#CFF1EE"/>
+<text x="1062" y="1240" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">desh</text>
+<rect x="90" y="1270" width="280" height="64" rx="12" fill="#1F2430"/>
+<circle cx="120" cy="1302.0" r="16" fill="#2F7BD8"/><text x="120" y="1307.0" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">4</text>
+<text x="146" y="1307.0" font-size="16" fill="#fff" font-weight="700"><tspan x="146" dy="0">Tokens</tspan></text>
+<line x1="230.0" y1="1336" x2="230.0" y2="1406" stroke="#1F2430" stroke-width="2.5" marker-end="url(#ar)"/>
+<text x="425" y="1290" font-size="14" fill="#3A4150" font-weight="400"><tspan x="425" dy="0">The final pieces are the tokens. Common words = 1 token. Less</tspan><tspan x="425" dy="20">common words = a few known pieces. Same text → always the same</tspan><tspan x="425" dy="20">tokens.</tspan></text>
+<rect x="920" y="1280" width="42" height="30" rx="6" fill="#FFD9C2"/>
+<text x="941" y="1300" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">What</text>
+<rect x="966" y="1280" width="35" height="30" rx="6" fill="#C9E7FF"/>
+<text x="984" y="1300" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣is</text>
+<rect x="1005" y="1280" width="42" height="30" rx="6" fill="#D4F2D2"/>
+<text x="1026" y="1300" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣the</text>
+<rect x="1052" y="1280" width="73" height="30" rx="6" fill="#EBDDFF"/>
+<text x="1088" y="1300" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣capital</text>
+<rect x="1128" y="1280" width="35" height="30" rx="6" fill="#FFF0B3"/>
+<text x="1146" y="1300" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣of</text>
+<rect x="1167" y="1280" width="65" height="30" rx="6" fill="#FFD1DC"/>
+<text x="1200" y="1300" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">␣Bangla</text>
+<rect x="1236" y="1280" width="42" height="30" rx="6" fill="#CFF1EE"/>
+<text x="1258" y="1300" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">desh</text>
+<rect x="1283" y="1280" width="30" height="30" rx="6" fill="#E6E0D4"/>
+<text x="1298" y="1300" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">?</text>
+<text x="920" y="1360" font-size="13" font-weight="700" fill="#F26B21">8 tokens</text>
+<rect x="90" y="1410" width="280" height="64" rx="12" fill="#1F2430"/>
+<circle cx="120" cy="1442.0" r="16" fill="#2F7BD8"/><text x="120" y="1447.0" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">5</text>
+<text x="146" y="1438.0" font-size="16" fill="#fff" font-weight="700"><tspan x="146" dy="0">Vocabulary lookup →</tspan><tspan x="146" dy="18">Token IDs</tspan></text>
+<line x1="230.0" y1="1476" x2="230.0" y2="1546" stroke="#1F2430" stroke-width="2.5" marker-end="url(#ar)"/>
+<text x="425" y="1430" font-size="14" fill="#3A4150" font-weight="400"><tspan x="425" dy="0">Each token is looked up in the vocabulary (a dictionary of</tspan><tspan x="425" dy="20">~50k–200k entries) and replaced by its integer ID. This list is</tspan><tspan x="425" dy="20">what the model receives, and what the API counts and bills.</tspan></text>
+<rect x="920" y="1420" width="40" height="24" rx="6" fill="#FFD9C2"/>
+<text x="940" y="1436" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">What</text>
+<rect x="964" y="1420" width="32" height="24" rx="6" fill="#C9E7FF"/>
+<text x="980" y="1436" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">␣is</text>
+<rect x="1000" y="1420" width="40" height="24" rx="6" fill="#D4F2D2"/>
+<text x="1020" y="1436" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">␣the</text>
+<rect x="1043" y="1420" width="69" height="24" rx="6" fill="#EBDDFF"/>
+<text x="1078" y="1436" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#1F2430">␣capital</text>
+<rect x="920" y="1450" width="40" height="24" rx="6" fill="#1F2430"/>
+<text x="940" y="1466" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#fff">3923</text>
+<rect x="964" y="1450" width="32" height="24" rx="6" fill="#1F2430"/>
+<text x="980" y="1466" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#fff">382</text>
+<rect x="1000" y="1450" width="32" height="24" rx="6" fill="#1F2430"/>
+<text x="1016" y="1466" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#fff">290</text>
+<rect x="1036" y="1450" width="40" height="24" rx="6" fill="#1F2430"/>
+<text x="1056" y="1466" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="12" fill="#fff">9029</text>
+<text x="920" y="1496" font-size="13" font-family="Consolas,Menlo,monospace" fill="#1F2430">[3923, 382, 290, 9029, 328, 42563, 31301, 30] = 8 tokens</text>
+<rect x="90" y="1550" width="280" height="64" rx="12" fill="#1F2430"/>
+<circle cx="120" cy="1582.0" r="16" fill="#F26B21"/><text x="120" y="1587.0" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">6</text>
+<text x="146" y="1587.0" font-size="16" fill="#fff" font-weight="700"><tspan x="146" dy="0">Embedding</tspan></text>
+<line x1="230.0" y1="1616" x2="230.0" y2="1686" stroke="#1F2430" stroke-width="2.5" marker-end="url(#ar)"/>
+<text x="425" y="1570" font-size="14" fill="#3A4150" font-weight="400"><tspan x="425" dy="0">Inside the model, each ID selects one row of the embedding table</tspan><tspan x="425" dy="20">→ a vector of thousands of numbers representing meaning.</tspan><tspan x="425" dy="20">Position info is added so word order is known.</tspan></text>
+<rect x="920" y="1566" width="48" height="30" rx="6" fill="#1F2430"/>
+<text x="944" y="1586" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#fff">9029</text>
+<text x="950" y="1616" text-anchor="middle" font-size="12" fill="#5A6272">"␣capital"</text>
+<line x1="990" y1="1581" x2="1030" y2="1581" stroke="#1F2430" stroke-width="2" marker-end="url(#ar)"/>
+<rect x="1038" y="1564" width="300" height="34" rx="7" fill="#FFF4EC" stroke="#F26B21"/>
+<text x="1188" y="1586" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13">[0.12, −0.83, 0.45, …, 0.07]</text>
+<text x="1038" y="1620" font-size="12" fill="#9AA1AE">thousands of numbers + position info</text>
+<rect x="90" y="1690" width="280" height="64" rx="12" fill="#1F2430"/>
+<circle cx="120" cy="1722.0" r="16" fill="#F26B21"/><text x="120" y="1727.0" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">7</text>
+<text x="146" y="1727.0" font-size="16" fill="#fff" font-weight="700"><tspan x="146" dy="0">Transformer layers</tspan></text>
+<line x1="230.0" y1="1756" x2="230.0" y2="1826" stroke="#1F2430" stroke-width="2.5" marker-end="url(#ar)"/>
+<text x="425" y="1710" font-size="14" fill="#3A4150" font-weight="400"><tspan x="425" dy="0">Attention lets every token look at the others ("capital" +</tspan><tspan x="425" dy="20">"Bangla" + "desh"). After N layers the model scores EVERY</tspan><tspan x="425" dy="20">vocabulary entry; softmax turns scores into probabilities.</tspan></text>
+<text x="920" y="1712" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">Dhaka</text>
+<rect x="1020" y="1700" width="224" height="16" rx="3" fill="#F26B21"/>
+<text x="1252" y="1712" font-size="12" fill="#3A4150">86%</text>
+<text x="920" y="1736" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">The</text>
+<rect x="1020" y="1724" width="23" height="16" rx="3" fill="#F9C2A1"/>
+<text x="1051" y="1736" font-size="12" fill="#3A4150">9%</text>
+<text x="920" y="1760" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">Bangladesh</text>
+<rect x="1020" y="1748" width="5" height="16" rx="3" fill="#F9C2A1"/>
+<text x="1033" y="1760" font-size="12" fill="#3A4150">2%</text>
+<text x="920" y="1784" font-family="Consolas,Menlo,monospace" font-size="13" fill="#1F2430">It</text>
+<rect x="1020" y="1772" width="3" height="16" rx="3" fill="#F9C2A1"/>
+<text x="1031" y="1784" font-size="12" fill="#3A4150">1%</text>
+<text x="920" y="1808" font-size="12" fill="#9AA1AE">…probabilities for all ~200,000 vocabulary entries</text>
+<rect x="90" y="1830" width="280" height="64" rx="12" fill="#1F2430"/>
+<circle cx="120" cy="1862.0" r="16" fill="#F26B21"/><text x="120" y="1867.0" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">8</text>
+<text x="146" y="1867.0" font-size="16" fill="#fff" font-weight="700"><tspan x="146" dy="0">Pick the next token</tspan></text>
+<line x1="230.0" y1="1896" x2="230.0" y2="1966" stroke="#1F2430" stroke-width="2.5" marker-end="url(#ar)"/>
+<text x="425" y="1850" font-size="14" fill="#3A4150" font-weight="400"><tspan x="425" dy="0">One token is chosen from the probabilities (sampling).</tspan><tspan x="425" dy="20">Temperature controls randomness: low = almost always the top</tspan><tspan x="425" dy="20">choice, high = more creative.</tspan></text>
+<rect x="920" y="1844" width="200" height="32" rx="7" fill="none" stroke="#F26B21" stroke-width="2.5"/>
+<text x="932" y="1865" font-family="Consolas,Menlo,monospace" font-size="14">Dhaka  86%  ✓ picked</text>
+<line x1="1126" y1="1860" x2="1166" y2="1860" stroke="#1F2430" stroke-width="2" marker-end="url(#ar)"/>
+<rect x="1172" y="1846" width="56" height="30" rx="6" fill="#1F2430"/>
+<text x="1200" y="1866" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#fff">71234</text>
+<text x="920" y="1902" font-size="12" fill="#9AA1AE">temperature 0 → always top · temperature 1 → sometimes "The…"</text>
+<rect x="90" y="1970" width="280" height="64" rx="12" fill="#1F2430"/>
+<circle cx="120" cy="2002.0" r="16" fill="#1E8449"/><text x="120" y="2007.0" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">9</text>
+<text x="146" y="2007.0" font-size="16" fill="#fff" font-weight="700"><tspan x="146" dy="0">Detokenize → text</tspan></text>
+<line x1="230.0" y1="2036" x2="230.0" y2="2106" stroke="#1F2430" stroke-width="2.5" marker-end="url(#ar)"/>
+<text x="425" y="1990" font-size="14" fill="#3A4150" font-weight="400"><tspan x="425" dy="0">The chosen ID is turned back into text with the same vocabulary</tspan><tspan x="425" dy="20">(reverse lookup) and streamed to you immediately.</tspan></text>
+<rect x="920" y="1986" width="56" height="30" rx="6" fill="#1F2430"/>
+<text x="948" y="2006" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#fff">71234</text>
+<line x1="990" y1="2001" x2="1030" y2="2001" stroke="#1F2430" stroke-width="2" marker-end="url(#ar)"/>
+<text x="1040" y="2008" font-size="20" font-weight="700" fill="#F26B21">"Dhaka"</text>
+<text x="920" y="2042" font-size="12" fill="#9AA1AE">shown to you right away → that's why answers "stream"</text>
+<rect x="90" y="2110" width="280" height="64" rx="12" fill="#1F2430"/>
+<circle cx="120" cy="2142.0" r="16" fill="#1E8449"/><text x="120" y="2147.0" text-anchor="middle" font-size="15" font-weight="700" fill="#fff">10</text>
+<text x="146" y="2147.0" font-size="16" fill="#fff" font-weight="700"><tspan x="146" dy="0">Repeat or stop</tspan></text>
+<text x="425" y="2130" font-size="14" fill="#3A4150" font-weight="400"><tspan x="425" dy="0">The new ID is appended to the context and the model runs again</tspan><tspan x="425" dy="20">from step 6. It stops when it picks the special &lt;end&gt; token or</tspan><tspan x="425" dy="20">hits max_tokens.</tspan></text>
+<rect x="920" y="2124" width="70" height="30" rx="6" fill="#F26B21"/><text x="955.0" y="2144" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#fff">Dhaka</text>
+<text x="955.0" y="2172" text-anchor="middle" font-size="12" fill="#5A6272">71234</text>
+<line x1="994" y1="2139" x2="1020" y2="2139" stroke="#1F2430" stroke-width="2" marker-end="url(#ar)"/>
+<rect x="1026" y="2124" width="70" height="30" rx="6" fill="#F26B21"/><text x="1061.0" y="2144" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#fff">.</text>
+<text x="1061.0" y="2172" text-anchor="middle" font-size="12" fill="#5A6272">13</text>
+<line x1="1100" y1="2139" x2="1126" y2="2139" stroke="#1F2430" stroke-width="2" marker-end="url(#ar)"/>
+<rect x="1132" y="2124" width="70" height="30" rx="6" fill="#1F2430"/><text x="1167.0" y="2144" text-anchor="middle" font-family="Consolas,Menlo,monospace" font-size="13" fill="#fff">&lt;end&gt;</text>
+<text x="1167.0" y="2172" text-anchor="middle" font-size="12" fill="#5A6272">stop</text>
+<text x="920" y="2200" font-size="13" fill="#1F2430">Answer: <tspan font-weight="700" fill="#F26B21">"Dhaka."</tspan>  ·  3 output tokens (billed)</text>
+<path d="M370,2142.0 L384,2142.0 Q398,2142.0 398,2128.0 L398,1596.0 Q398,1582.0 384,1582.0 L373,1582.0" fill="none" stroke="#F26B21" stroke-width="3" marker-end="url(#ao)"/>
+<rect x="388" y="1782.0" width="20" height="160" fill="#F7F8FA"/>
+<text transform="translate(403,1862.0) rotate(-90)" text-anchor="middle" font-size="12" font-weight="700" fill="#F26B21">LOOP: one token per pass</text>
+<rect x="40" y="2260" width="1320" height="92" rx="12" fill="#1F2430"/>
+<text x="64" y="2294" font-size="17" font-weight="700" fill="#fff">In one line:</text>
+<text x="180" y="2294" font-size="16" fill="#E6E8EC">text → chunks → BPE merges → tokens → IDs → vectors → transformer → probabilities → pick ID → text → repeat until &lt;end&gt;</text>
+<text x="64" y="2326" font-size="14" fill="#C9CED8">Rule of thumb: 1 token ≈ 4 English characters ≈ ¾ word · Bangla/Arabic often use 2–4× more tokens · You pay for input + output tokens</text>
+<text x="700" y="2376" text-anchor="middle" font-size="12" fill="#9AA1AE">Token splits, IDs and probabilities are illustrative. Every model family has its own tokenizer and vocabulary.</text>
+</svg>
