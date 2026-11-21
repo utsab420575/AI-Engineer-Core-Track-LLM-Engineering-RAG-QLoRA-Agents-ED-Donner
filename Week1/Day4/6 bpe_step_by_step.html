@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Tokens Are Generated: Step by Step (BPE)</title>
+<style>
+  :root{--o:#F26B21;--o2:#FFF4EC;--o3:#FFE6D6;--d:#1F2430;--g:#5A6272;--g2:#9AA1AE;--bg:#F7F8FA;--line:#E2E5EA;--blue:#2F7BD8;--green:#1E8449;--red:#C0392B}
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);font-family:"Segoe UI",Helvetica,Arial,sans-serif;color:var(--d);display:flex;flex-direction:column}
+  header{background:var(--o);color:#fff;padding:14px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+  header h1{margin:0;font-size:20px;flex:1;min-width:260px}
+  header .sub{font-size:13px;opacity:.85;font-weight:400;display:block}
+  .nav{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  button{font:inherit;font-weight:600;border:1px solid var(--line);background:#fff;color:var(--d);padding:9px 16px;border-radius:10px;cursor:pointer}
+  button:hover:not(:disabled){border-color:var(--o)}
+  button:disabled{opacity:.4;cursor:default}
+  button.primary{background:var(--d);border-color:var(--d);color:#fff}
+  header button{border-color:transparent}
+  .counter{font-family:Consolas,Menlo,monospace;font-size:14px;background:rgba(0,0,0,.18);padding:7px 12px;border-radius:8px}
+  .sections{display:flex;gap:6px;flex-wrap:wrap;padding:10px 22px;background:#fff;border-bottom:1px solid var(--line)}
+  .sections button{padding:5px 11px;font-size:13px;border-radius:20px;background:#F1F2F5;border-color:#F1F2F5}
+  .sections button.on{background:var(--o);border-color:var(--o);color:#fff}
+  .progress{height:4px;background:#E9EBEF}.progress i{display:block;height:100%;background:var(--o);transition:width .25s}
+  main{flex:1;display:grid;grid-template-columns:minmax(0,1fr) 470px;gap:18px;padding:18px 22px;min-height:0}
+  @media(max-width:1050px){main{grid-template-columns:1fr}}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;overflow:auto;min-height:0}
+  .phase{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.5px;padding:4px 10px;border-radius:20px;color:#fff;background:var(--d)}
+  .phase.train{background:var(--blue)}.phase.use{background:var(--o)}.phase.done{background:var(--green)}
+  h2{margin:10px 0 16px;font-size:24px;line-height:1.25}
+  h3{margin:20px 0 8px;font-size:14px;color:var(--g);letter-spacing:.4px;text-transform:uppercase}
+  .explain{font-size:15.5px;line-height:1.65}
+  .explain p{margin:0 0 12px}
+  .explain .box{background:var(--o2);border-left:4px solid var(--o);border-radius:8px;padding:12px 14px;margin:12px 0}
+  .explain .key{background:#EAF2FC;border-left:4px solid var(--blue);border-radius:8px;padding:12px 14px;margin:12px 0}
+  .explain .calc{font-family:Consolas,Menlo,monospace;background:#1F2430;color:#fff;border-radius:8px;padding:12px 14px;margin:10px 0;font-size:14.5px;line-height:1.7;white-space:pre-wrap}
+  .explain .calc b{color:#FFB98F}
+  code,.m{font-family:Consolas,Menlo,monospace}
+  code{background:#EEF0F3;padding:1px 6px;border-radius:5px;font-size:.92em}
+  .chip{display:inline-flex;align-items:center;justify-content:center;min-width:30px;height:32px;padding:0 9px;margin:2px;border-radius:7px;background:#EEF0F3;font-family:Consolas,Menlo,monospace;font-size:16px;vertical-align:middle}
+  .chip.merged{background:var(--o3)}
+  .chip.fresh{background:#FFC9A6;box-shadow:0 0 0 2px var(--o) inset}
+  .chip.sm{height:26px;font-size:14px;min-width:24px;padding:0 7px}
+  .chip.id{background:var(--d);color:#fff}
+  .pairbox{display:inline-flex;border:3px solid var(--o);border-radius:10px;padding:0 1px;margin:0 1px;vertical-align:middle}
+  .sep{color:var(--g2);margin:0 2px}
+  table{border-collapse:collapse;width:100%;font-size:15px}
+  th{text-align:left;font-size:12px;color:var(--g);letter-spacing:.4px;text-transform:uppercase;padding:8px 10px;border-bottom:2px solid var(--line)}
+  td{padding:9px 10px;border-bottom:1px solid #EEF0F3;vertical-align:middle}
+  tr.win td{background:var(--o2)}
+  tr.win td:first-child{box-shadow:inset 4px 0 0 var(--o)}
+  tr.dim td{color:var(--g2)}
+  .tot{font-family:Consolas,Menlo,monospace;font-weight:700;font-size:16px}
+  .bar{display:inline-block;height:12px;border-radius:3px;background:#F9C2A1;vertical-align:middle;margin-right:6px}
+  tr.win .bar{background:var(--o)}
+  .badge{display:inline-block;font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;background:var(--o);color:#fff;margin-left:6px;vertical-align:middle}
+  .badge.g{background:#E9EBEF;color:var(--g)}
+  .badge.green{background:var(--green)}
+  .dataset{font-family:Consolas,Menlo,monospace;font-size:20px;line-height:2.1;background:#F7F8FA;border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+  .w{padding:2px 6px;border-radius:5px;margin-right:2px}
+  .rule{display:inline-block;background:var(--o2);border:2px solid var(--o);border-radius:12px;padding:14px 22px;font-family:Consolas,Menlo,monospace;font-size:24px}
+  .rule small{display:block;font-family:"Segoe UI",sans-serif;font-size:13px;font-weight:700;color:var(--o);margin-bottom:4px}
+  .lookup{display:inline-flex;flex-direction:column;align-items:center;margin:4px;padding:7px 11px;border-radius:9px;background:#F3F4F6;color:var(--g2);font-family:Consolas,Menlo,monospace;font-size:15px}
+  .lookup small{font-family:"Segoe UI",sans-serif;font-size:11px;font-weight:700}
+  .lookup.has{background:var(--o2);color:var(--d)}
+  .lookup.pick{background:var(--o);color:#fff}
+  .arrow{font-size:22px;color:var(--o);margin:6px 0}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .card{border:1px solid var(--line);border-radius:12px;padding:14px}
+  .vocab{display:flex;flex-wrap:wrap;gap:6px}
+  .vocab div{display:flex;flex-direction:column;align-items:center;padding:6px 10px;border-radius:8px;background:#EEF0F3;font-family:Consolas,Menlo,monospace;font-size:15px}
+  .vocab div.merged{background:var(--o3)}
+  .vocab div b{font-size:12px;color:var(--o)}
+  .hint{font-size:12.5px;color:var(--g);margin-top:14px}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:9}
+  .modal.show{display:flex}
+  .modal .inner{background:#fff;border-radius:14px;padding:22px;width:min(640px,92vw)}
+  .modal textarea,.modal input{width:100%;font-family:Consolas,Menlo,monospace;font-size:15px;padding:10px;border:1px solid var(--line);border-radius:8px;margin:6px 0 14px}
+  .modal textarea{height:150px}
+  .modal label{font-size:13px;font-weight:700;color:var(--g)}
+</style>
+</head>
+<body>
+<header>
+  <h1>How a token is generated from text <span class="sub">Byte Pair Encoding (BPE), every number calculated from the training text</span></h1>
+  <div class="nav">
+    <button id="edit" title="Use your own training text">✎ Change example</button>
+    <button id="prev">◀ Previous</button>
+    <span class="counter" id="counter">1 / 1</span>
+    <button id="next" class="primary">Next ▶</button>
+  </div>
+</header>
+<div class="progress"><i id="prog"></i></div>
+<div class="sections" id="sections"></div>
+<main>
+  <section class="panel" id="visual"></section>
+  <section class="panel explain" id="explain"></section>
+</main>
+
+<div class="modal" id="modal"><div class="inner">
+  <h2 style="margin-top:0">Try your own example</h2>
+  <label>TRAINING TEXT (any words, separated by spaces or new lines)</label>
+  <textarea id="inCorpus"></textarea>
+  <label>NUMBER OF RULES TO LEARN</label>
+  <input id="inRounds" type="number" min="1" max="20">
+  <label>WORDS TO TOKENIZE AFTERWARDS (comma separated)</label>
+  <input id="inWords">
+  <div style="display:flex;gap:8px;justify-content:flex-end">
+    <button id="reset">Reset to default</button><button id="cancel">Cancel</button><button id="apply" class="primary">Build steps</button>
+  </div>
+</div></div>
+
+<script>
+const DEFAULT = {
+  corpus: "low low low low low\nlower lower\nnewest newest newest newest newest newest\nwidest widest widest",
+  rounds: 6,
+  words: "lowest, newer"
+};
+let CFG = {...DEFAULT};
+const WCOL = ["#FFD9C2","#C9E7FF","#D4F2D2","#EBDDFF","#FFF0B3","#FFD1DC","#CFF1EE","#E6E0D4"];
+const esc = s => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const P = (a,b) => a + "\u0001" + b;
+
+/* ---------- rendering helpers ---------- */
+function chips(pieces, {hl=-1, fresh=null, sm=false}={}){
+  let out = "";
+  for (let i=0;i<pieces.length;i++){
+    const cls = "chip" + (sm?" sm":"") + (pieces[i].length>1?" merged":"") + (fresh && fresh.has(i)?" fresh":"");
+    const c = `<span class="${cls}">${esc(pieces[i])}</span>`;
+    if (i===hl){ out += `<span class="pairbox">${c}<span class="${"chip"+(sm?" sm":"")+(pieces[i+1].length>1?" merged":"")}">${esc(pieces[i+1])}</span></span>`; i++; }
+    else out += c;
+  }
+  return out;
+}
+const pairTxt = (a,b) => `<code>${esc(a)} + ${esc(b)}</code>`;
+const plural = (n,w) => `${n} time${n===1?"":"s"}`;
+
+/* ---------- build all steps from the config ---------- */
+function build(){
+  const tokens = CFG.corpus.split(/\s+/).filter(Boolean);
+  const lines = CFG.corpus.split(/\n/).map(l=>l.trim()).filter(Boolean);
+  const order = [], cnt = {};
+  tokens.forEach(t=>{ if(!(t in cnt)){cnt[t]=0;order.push(t);} cnt[t]++; });
+  const color = {}; order.forEach((w,i)=>color[w]=WCOL[i%WCOL.length]);
+  let words = order.map(w=>({word:w, count:cnt[w], pieces:[...w]}));
+  const letters = [...new Set(tokens.join(""))].sort();
+  const S = [];
+  const datasetHTML = () => `<div class="dataset">${lines.map(l=>l.split(/\s+/).map(w=>`<span class="w" style="background:${color[w]}">${esc(w)}</span>`).join(" ")).join("<br>")}</div>`;
+
+  /* --- 1. dataset --- */
+  S.push({sec:"Dataset", phase:"train", title:"Start: the training text",
+    vis:`<h3>Training text (the dataset)</h3>${datasetHTML()}
+         <p class="hint">Colours only help you see which word is which. The computer just sees the text.</p>`,
+    exp:`<p>Before any AI model is trained, the tokenizer must learn its <b>rules</b>. It learns them from a big collection of text called the <b>training text</b> (or dataset).</p>
+         <p>Real tokenizers read billions of sentences. Here we use a tiny dataset with ${tokens.length} words so you can follow every calculation by hand.</p>
+         <div class="key"><b>Goal of Part 1 (training):</b> find which letters appear next to each other most often, and turn them into "glue rules".<br><b>Goal of Part 2 (using):</b> use those rules to cut any new text into tokens.</div>
+         <p>Nothing is assumed: every number in the next steps is <b>counted from this text</b>.</p>`});
+
+  /* --- 2. count words --- */
+  const countRows = order.map(w=>{
+    const ones = Array(cnt[w]).fill("1").join(" + ");
+    return `<tr><td><span class="w m" style="background:${color[w]}">${esc(w)}</span></td><td class="m">${ones}</td><td class="tot">${cnt[w]}</td></tr>`;}).join("");
+  S.push({sec:"Dataset", phase:"train", title:"Step 1: count how many times each word appears",
+    vis:`<h3>Training text</h3>${datasetHTML()}
+         <h3>Counting</h3><table><tr><th>Word</th><th>Each time we see it, add 1</th><th>Count</th></tr>${countRows}</table>`,
+    exp:`<p>The computer reads the text word by word and keeps a tally for each different word.</p>
+         <div class="calc">${order.map(w=>`<b>${esc(w).padEnd(8)}</b> seen ${cnt[w]}× → count = ${cnt[w]}`).join("\n")}</div>
+         <p><b>Why count words first?</b> Every copy of <code>${esc(order[0])}</code> has exactly the same letters, so instead of looking at it ${cnt[order[0]]} separate times, the computer looks once and remembers "×${cnt[order[0]]}". It's just a shortcut; the result is identical.</p>
+         <div class="box">These counts (${order.map(w=>`${esc(w)} = ${cnt[w]}`).join(", ")}) come straight from the text. If the text changes, these numbers change.</div>`});
+
+  /* --- 3. split into letters --- */
+  S.push({sec:"Dataset", phase:"train", title:"Step 2: split every word into single letters",
+    vis:`<h3>Starting pieces</h3><table><tr><th>Word</th><th>Count</th><th>Pieces</th></tr>
+         ${words.map(w=>`<tr><td><span class="w m" style="background:${color[w.word]}">${esc(w.word)}</span></td><td class="tot">× ${w.count}</td><td>${chips(w.pieces)}</td></tr>`).join("")}</table>
+         <h3>Starting dictionary = every different letter</h3><div>${chips(letters)}</div>`,
+    exp:`<p>At the start, every letter is its own <b>piece</b>. Nothing is glued yet.</p>
+         <p>The starting dictionary is simply every different letter found in the text: ${letters.map(l=>`<code>${esc(l)}</code>`).join(" ")} (${letters.length} letters).</p>
+         <div class="key">From now on the tokenizer repeats the same 3-step <b>round</b>:<br>
+         ① list every pair of neighbouring pieces in each word<br>
+         ② add up how often each pair occurs (using the word counts)<br>
+         ③ glue the most frequent pair → write it down as a new <b>rule</b></div>
+         <p>Each round creates exactly <b>one</b> rule.</p>`});
+
+  /* --- rounds --- */
+  const merges = [];
+  let prevNew = null;   // piece created last round
+  for (let r=1; r<=CFG.rounds; r++){
+    // collect pairs in reading order
+    const tot = new Map(), contrib = new Map(), firstSeen = new Map(); let seq=0;
+    words.forEach(w=>{
+      for (let i=0;i<w.pieces.length-1;i++){
+        const k = P(w.pieces[i], w.pieces[i+1]);
+        if (!tot.has(k)){ tot.set(k,0); contrib.set(k,[]); firstSeen.set(k,seq); }
+        seq++;
+        tot.set(k, tot.get(k)+w.count);
+        contrib.get(k).push(w);
+      }
+    });
+    if (!tot.size) break;
+    let best=null; for (const [k,v] of tot) if (best===null || v>tot.get(best)) best=k;
+    const [ba,bb] = best.split("\u0001"); const bTot = tot.get(best);
+    const ties = [...tot].filter(([k,v])=>v===bTot).map(([k])=>k);
+
+    // ① list pairs
+    const listRows = words.map(w=>{
+      const prs = [];
+      for (let i=0;i<w.pieces.length-1;i++){
+        const a=w.pieces[i], b=w.pieces[i+1];
+        const isNew = prevNew && (a===prevNew || b===prevNew);
+        prs.push(`<span class="m" style="white-space:nowrap">${esc(a)}+${esc(b)}${isNew?'<span class="badge">NEW</span>':""}</span>`);
+      }
+      return `<tr><td><span class="w m" style="background:${color[w.word]}">${esc(w.word)}</span> <span class="tot">×${w.count}</span></td><td>${chips(w.pieces,{sm:true})}</td><td style="line-height:1.9">${prs.join(" , ")||'<span class="badge g">no pairs</span>'}</td></tr>`;}).join("");
+    const exW = (prevNew && words.find(w=>w.pieces.includes(prevNew))) || words.find(w=>w.pieces.length>2) || words[0];
+    let newPairsNote = "";
+    if (prevNew){
+      const np = [...tot.keys()].filter(k=>k.split("\u0001").includes(prevNew)).map(k=>k.split("\u0001"));
+      newPairsNote = `<div class="box"><b>Why are there NEW pairs?</b> Last round we glued <code>${esc(prevNew)}</code> into <b>one piece</b>. So now it sits next to other pieces as a single unit, creating new neighbour pairs: ${np.map(([a,b])=>pairTxt(a,b)).join(", ")}.<br>These pairs could <b>not</b> exist before, because <code>${esc(prevNew)}</code> was still separate letters.</div>`;
+    }
+    S.push({sec:`Round ${r}`, phase:"train", title:`Round ${r} · ① List every neighbour pair`,
+      vis:`<h3>Current pieces and their neighbour pairs</h3><table><tr><th>Word</th><th>Pieces now</th><th>Neighbour pairs</th></tr>${listRows}</table>`,
+      exp:`<p>A <b>neighbour pair</b> is two pieces standing directly next to each other.</p>
+           <p>Example: <code>${esc(exW.word)}</code> is currently ${chips(exW.pieces,{sm:true})}<br>Its neighbour pairs are: ${exW.pieces.slice(0,-1).map((p,i)=>pairTxt(p,exW.pieces[i+1])).join(", ")}.</p>
+           ${newPairsNote}
+           <p>Each word is listed once, but remember its count: every pair inside <code>${esc(exW.word)}</code> really occurs <b>${exW.count}</b> times in the training text, because the word appears ${exW.count} times.</p>`});
+
+    // ② add up
+    const sorted = [...tot].sort((x,y)=> y[1]-x[1] || firstSeen.get(x[0])-firstSeen.get(y[0]));
+    const maxv = sorted[0][1];
+    const sumRows = sorted.map(([k,v])=>{
+      const [a,b]=k.split("\u0001"); const cs = contrib.get(k);
+      const where = cs.map(w=>`<span class="w m" style="background:${color[w.word]}">${esc(w.word)}</span>`).join(" ");
+      const calc = cs.map(w=>w.count).join(" + ");
+      return `<tr class="${k===best?"win":""}"><td class="m">${esc(a)} + ${esc(b)}</td><td>${where}</td><td class="m">${calc}</td><td class="tot"><span class="bar" style="width:${v/maxv*90}px"></span>${v}</td></tr>`;}).join("");
+    const top3 = sorted.slice(0,3);
+    const narr = top3.map(([k,v])=>{
+      const [a,b]=k.split("\u0001"); const cs=contrib.get(k);
+      const lines2 = cs.map(w=>`  found in ${esc(w.word)}\n    ${esc(w.word)} appears ${w.count}× → adds ${w.count}`).join("\n");
+      return `<b>${esc(a)} + ${esc(b)}</b>\n${lines2}\n  total = ${cs.map(w=>w.count).join(" + ")} = <b>${v}</b>`;}).join("\n\n");
+    let tieNote = "";
+    if (ties.length>1){
+      tieNote = `<div class="key"><b>It's a tie!</b> ${ties.map(k=>{const [a,b]=k.split("\u0001");return pairTxt(a,b);}).join(" and ")} all have <b>${bTot}</b>.<br>A tokenizer needs a fixed tie-break so the result is always the same. Ours uses: <i>pick the pair that was found <b>first</b> while reading the words from top to bottom, left to right.</i> ${pairTxt(ba,bb)} was found first, so it wins. (Real tokenizers also use a fixed tie-break rule.)</div>`;
+    }
+    S.push({sec:`Round ${r}`, phase:"train", title:`Round ${r} · ② Add up each pair`,
+      vis:`<h3>Total for every pair (highest first)</h3><table><tr><th>Pair</th><th>Found in</th><th>Calculation</th><th>Total</th></tr>${sumRows}</table>`,
+      exp:`<p><b>How a total is calculated:</b> for each pair, find every word that contains it and <b>add those words' counts</b>.</p>
+           <div class="calc">${narr}</div>
+           <p>The highest total is ${pairTxt(ba,bb)} with <b>${bTot}</b>.</p>
+           ${tieNote}
+           <div class="box">Nothing about <b>${bTot}</b> was assumed. It is simply ${contrib.get(best).map(w=>`${w.count} (from ${esc(w.word)})`).join(" + ")}.</div>`});
+
+    // ③ merge
+    const newPiece = ba+bb;
+    const after = words.map(w=>{
+      const out=[], fresh=new Set(); let i=0;
+      while(i<w.pieces.length){
+        if (i<w.pieces.length-1 && w.pieces[i]===ba && w.pieces[i+1]===bb){ fresh.add(out.length); out.push(newPiece); i+=2; }
+        else { out.push(w.pieces[i]); i++; }
+      }
+      return {...w, newPieces:out, fresh};
+    });
+    const mergeRows = after.map(w=>{
+      const changed = w.fresh.size>0;
+      const hl = w.pieces.findIndex((p,i)=>p===ba && w.pieces[i+1]===bb);
+      return `<tr class="${changed?"":"dim"}"><td><span class="w m" style="background:${color[w.word]}">${esc(w.word)}</span></td><td>${chips(w.pieces,{hl:changed?hl:-1,sm:true})}</td><td style="color:var(--o);font-size:20px">→</td><td>${chips(w.newPieces,{fresh:w.fresh,sm:true})}</td><td>${changed?'<span class="badge">changed</span>':'<span class="badge g">no '+esc(ba)+"+"+esc(bb)+'</span>'}</td></tr>`;}).join("");
+    const futurePairs = new Set();
+    after.forEach(w=>w.newPieces.forEach((p,i)=>{ if(p===newPiece){ if(i>0) futurePairs.add(P(w.newPieces[i-1],p)); if(i<w.newPieces.length-1) futurePairs.add(P(p,w.newPieces[i+1])); }}));
+    merges.push([ba,bb]);
+    S.push({sec:`Round ${r}`, phase:"train", title:`Round ${r} · ③ Create Rule ${r} and glue`,
+      vis:`<div class="rule"><small>RULE ${r} IS CREATED</small>${esc(ba)} + ${esc(bb)} → ${esc(newPiece)}</div>
+           <h3>Update every word: glue ${esc(ba)}+${esc(bb)} wherever it appears</h3>
+           <table><tr><th>Word</th><th>Before</th><th></th><th>After</th><th></th></tr>${mergeRows}</table>`,
+      exp:`<p>The winning pair becomes <b>Rule ${r}</b>: <code>${esc(ba)} + ${esc(bb)} → ${esc(newPiece)}</code>.</p>
+           <p>Two things happen:</p>
+           <p><b>1. Write the rule down.</b> It goes into the rulebook as rule number ${r}. ${r===1?"Rule 1 is the most important rule: it was the most common pair.":`It comes after Rule ${r-1}, so it has lower priority than the rules before it.`}</p>
+           <p><b>2. Update the words.</b> Everywhere ${pairTxt(ba,bb)} sits side by side, the two pieces are glued into one piece <code>${esc(newPiece)}</code> (highlighted).
+           ${after.filter(w=>!w.fresh.size).length?` Words without ${pairTxt(ba,bb)} (${after.filter(w=>!w.fresh.size).map(w=>"<code>"+esc(w.word)+"</code>").join(", ")}) stay the same.`:""}</p>
+           <div class="calc">${after.filter(w=>w.fresh.size).map(w=>`${esc(w.word).padEnd(7)}: ${w.pieces.map(esc).join(" | ")}\n      → ${w.newPieces.map(esc).join(" | ")}`).join("\n")}</div>
+           <p><code>${esc(newPiece)}</code> is added to the dictionary as a new piece.</p>
+           ${futurePairs.size&&r<CFG.rounds?`<div class="box"><b>Look ahead:</b> because <code>${esc(newPiece)}</code> is now one piece, next round can count new pairs such as ${[...futurePairs].map(k=>{const [a,b]=k.split("\u0001");return pairTxt(a,b);}).join(", ")}.</div>`:""}`});
+    words = after.map(w=>({word:w.word,count:w.count,pieces:w.newPieces}));
+    prevNew = newPiece;
+  }
+
+  /* --- rulebook + dictionary --- */
+  const vocab = [...letters, ...merges.map(([a,b])=>a+b)];
+  const ids = {}; vocab.forEach((t,i)=>{ if(!(t in ids)) ids[t]=i; });
+  const rank = new Map(merges.map(([a,b],i)=>[P(a,b),i]));
+  S.push({sec:"Rulebook", phase:"done", title:"Training finished: the rulebook and the dictionary",
+    vis:`<div class="grid2">
+          <div class="card"><h3 style="margin-top:0">Rulebook (frozen)</h3>
+            <table>${merges.map(([a,b],i)=>`<tr><td><b style="color:var(--o)">Rule ${i+1}</b></td><td class="m">${esc(a)} + ${esc(b)} → ${esc(a+b)}</td></tr>`).join("")}</table></div>
+          <div class="card"><h3 style="margin-top:0">Final pieces of each word</h3>
+            <table>${words.map(w=>`<tr><td class="m">${esc(w.word)}</td><td>${chips(w.pieces,{sm:true})}</td></tr>`).join("")}</table></div>
+         </div>
+         <h3>Dictionary (vocabulary): piece → ID</h3>
+         <div class="vocab">${vocab.map(t=>`<div class="${t.length>1?"merged":""}">${esc(t)}<b>${ids[t]}</b></div>`).join("")}</div>`,
+    exp:`<p>After ${merges.length} rounds, training stops. Real tokenizers do this until they have about <b>50,000–200,000</b> rules.</p>
+         <p><b>The rulebook</b> is the ordered list of glue rules. The order matters: <b>a smaller rule number means higher priority</b>, because that pair was more common in the training text.</p>
+         <p><b>The dictionary</b> gives every piece a number (ID):</p>
+         <div class="calc">letters first, alphabetically:
+  ${letters.map(l=>`${esc(l)}=${ids[l]}`).join("  ")}
+then each new piece, in the order it was created:
+  ${merges.map(([a,b])=>`${esc(a+b)}=${ids[a+b]}`).join("  ")}</div>
+         <div class="key">From now on both are <b>frozen</b>. When you send text to an AI, the tokenizer does <b>no counting</b>. It only uses this rulebook and this dictionary.</div>`});
+
+  /* --- tokenize words --- */
+  const testWords = CFG.words.split(",").map(s=>s.trim()).filter(Boolean);
+  testWords.forEach(tw=>{
+    const inTrain = tw in cnt;
+    let sym = [...tw]; let k = 1;
+    S.push({sec:`"${tw}"`, phase:"use", title:`Part 2: tokenize "${tw}" · start with letters`,
+      vis:`<h3>New text to tokenize</h3><div style="font-size:28px" class="m">"${esc(tw)}"</div>
+           <div class="arrow">↓ split into letters</div><div>${chips(sym)}</div>`,
+      exp:`<p>Now we're in <b>Part 2</b>. Training is over and the rules are frozen.</p>
+           <p>The word <code>${esc(tw)}</code> ${inTrain?"was in the training text":"<b>never appeared</b> in the training text"}. That doesn't matter: the tokenizer works on pieces, not whole words.</p>
+           <div class="key"><b>The procedure (same for every text):</b><br>
+           1. Start with single letters.<br>
+           2. Look at every neighbour pair and check the rulebook.<br>
+           3. Among the pairs that have a rule, glue the one with the <b>smallest rule number</b>.<br>
+           4. Repeat until no pair has a rule.<br>
+           5. Replace each piece with its ID.</div>
+           <p>Note: <b>no counting</b> happens here. Counts were only used during training to decide the rule order.</p>`});
+    let lastFresh = null;
+    while(true){
+      const cands = sym.slice(0,-1).map((a,i)=>({a,b:sym[i+1],i,r:rank.has(P(a,sym[i+1]))?rank.get(P(a,sym[i+1])):null}));
+      const valid = cands.filter(c=>c.r!==null);
+      const pick = valid.length ? valid.reduce((m,c)=>c.r<m.r?c:m) : null;
+      const looks = cands.map(c=>`<span class="lookup ${pick&&c.i===pick.i?"pick":c.r!==null?"has":""}">${esc(c.a)}+${esc(c.b)}<small>${c.r!==null?"Rule "+(c.r+1):"no rule"}</small></span>`).join("");
+      const lookTxt = cands.map(c=>`${(esc(c.a)+"+"+esc(c.b)).padEnd(9)} → ${c.r!==null?`Rule ${c.r+1} ✓`:"not in rulebook"}`).join("\n");
+      if (pick){
+        const next = [...sym.slice(0,pick.i), pick.a+pick.b, ...sym.slice(pick.i+2)];
+        const others = valid.filter(c=>c!==pick);
+        S.push({sec:`"${tw}"`, phase:"use", title:`Tokenize "${tw}" · step ${k}: apply Rule ${pick.r+1}`,
+          vis:`<h3>Current pieces</h3><div>${chips(sym,{hl:pick.i,fresh:lastFresh})}</div>
+               <h3>Check every neighbour pair in the rulebook</h3><div>${looks||'<span class="badge g">no pairs</span>'}</div>
+               <div class="arrow">↓ glue ${esc(pick.a)} + ${esc(pick.b)}</div><div>${chips(next,{fresh:new Set([pick.i])})}</div>`,
+          exp:`<p>Check each neighbour pair against the rulebook:</p>
+               <div class="calc">${lookTxt}</div>
+               <p>${valid.length>1?`Several pairs have a rule: ${[...valid].sort((x,y)=>x.r-y.r).map(c=>"Rule "+(c.r+1)).join(", ")}. The <b>smallest number wins</b>: <b>Rule ${pick.r+1}</b>.`:`Only one pair has a rule: <b>Rule ${pick.r+1}</b>.`}</p>
+               ${others.length?`<div class="box"><b>Why Rule ${pick.r+1} and not ${others.map(c=>"Rule "+(c.r+1)).join(" / ")}?</b> Rule ${pick.r+1} was learned earlier, because its pair was more common in the training text. Earlier rule = higher priority. That's the only reason.</div>`:""}
+               <p>Glue ${pairTxt(pick.a,pick.b)} → <code>${esc(pick.a+pick.b)}</code>:</p>
+               <div class="calc">${sym.map(esc).join(" | ")}\n→ ${next.map(esc).join(" | ")}</div>`});
+        sym = next; lastFresh = new Set([pick.i]); k++;
+      } else {
+        const known = sym.every(t=>t in ids);
+        S.push({sec:`"${tw}"`, phase:"use", title:`Tokenize "${tw}" · no rule fits → done`,
+          vis:`<h3>Current pieces</h3><div>${chips(sym,{fresh:lastFresh})}</div>
+               <h3>Check every neighbour pair in the rulebook</h3><div>${looks||'<span class="badge g">only one piece, no pairs</span>'}</div>
+               <div class="arrow">↓ STOP. Look up each piece in the dictionary</div>
+               <table><tr><th>Token</th><th>Dictionary lookup</th><th>ID</th></tr>${sym.map(t=>`<tr><td>${chips([t],{sm:true})}</td><td class="m">"${esc(t)}" → ${t in ids?ids[t]:"not in dictionary"}</td><td>${t in ids?`<span class="chip sm id">${ids[t]}</span>`:"?"}</td></tr>`).join("")}</table>
+               <h3>What the AI model receives</h3><div class="m" style="font-size:24px;font-weight:700;color:var(--o)">[${sym.map(t=>t in ids?ids[t]:"?").join(", ")}]</div>`,
+          exp:`<p>Check the pairs one last time:</p>
+               <div class="calc">${lookTxt||"(only one piece left, so there are no pairs)"}</div>
+               <p>${cands.length?"None of these pairs is in the rulebook,":"There are no pairs,"} so the tokenizer <b>stops</b>.</p>
+               <p><b>Result:</b> <code>${esc(tw)}</code> becomes <b>${sym.length} token${sym.length>1?"s":""}</b>: ${sym.map(t=>`<code>${esc(t)}</code>`).join(" + ")}.</p>
+               <p>Finally, each token is swapped for its number from the dictionary. The list <b>[${sym.map(t=>t in ids?ids[t]:"?").join(", ")}]</b> is what the AI model actually reads.</p>
+               ${!known?`<div class="box">Some letters were never in the training text, so they have no ID here. Real tokenizers avoid this by starting from all 256 possible bytes, so nothing is ever missing.</div>`:""}
+               ${sym.length>1&&cands.some(c=>c.r===null)?`<div class="key">Pieces like ${cands.filter(c=>c.r===null).slice(0,2).map(c=>pairTxt(c.a,c.b)).join(", ")} stay separate because that pair was never common enough in training to get a rule.</div>`:""}`});
+        break;
+      }
+    }
+  });
+
+  /* --- summary --- */
+  S.push({sec:"Summary", phase:"done", title:"Summary: how a token is generated",
+    vis:`<div class="grid2">
+           <div class="card"><span class="phase train">PART 1 · TRAINING (once)</span>
+             <ol style="line-height:1.9;font-size:15px">
+               <li>Count how often each word appears</li>
+               <li>Split every word into letters</li>
+               <li>List all neighbour pairs</li>
+               <li>Total for each pair = sum of the counts of the words that contain it</li>
+               <li>Glue the highest pair → new rule</li>
+               <li>Update the words and repeat</li>
+             </ol></div>
+           <div class="card"><span class="phase use">PART 2 · USING (every time)</span>
+             <ol style="line-height:1.9;font-size:15px">
+               <li>Split the new text into letters</li>
+               <li>Check each neighbour pair in the rulebook</li>
+               <li>Glue the pair with the smallest rule number</li>
+               <li>Repeat until no rule fits</li>
+               <li>Replace each token with its ID</li>
+               <li>Send the IDs to the AI model</li>
+             </ol></div>
+         </div>`,
+    exp:`<p><b>Counting</b> happens only during training. It decides <b>which</b> rules exist and in <b>which order</b>.</p>
+         <p><b>Tokenizing</b> your text is just replaying those rules in order. No counting, no AI, no guessing. The same text always gives the same tokens.</p>
+         <div class="key"><b>Real tokenizers add two details:</b><br>
+         • They start from <b>bytes</b> (256 of them), not letters, so any language, emoji or symbol works.<br>
+         • They first cut sentences at spaces and punctuation, and attach the space to the next word (<code>" the"</code>).</div>
+         <p>Use <b>✎ Change example</b> at the top to type your own training text and words, and watch every count and rule recalculate.</p>`});
+  return S;
+}
+
+/* ---------- navigation ---------- */
+let STEPS = [], cur = 0;
+const $ = id => document.getElementById(id);
+function show(i){
+  cur = Math.max(0, Math.min(STEPS.length-1, i));
+  const s = STEPS[cur];
+  const lbl = {train:"PART 1 · TRAINING THE TOKENIZER", use:"PART 2 · USING THE RULES", done:"RESULT"}[s.phase];
+  $("visual").innerHTML = `<span class="phase ${s.phase}">${lbl}</span><h2>${esc(s.title)}</h2>${s.vis}`;
+  $("explain").innerHTML = `<h3 style="margin-top:0">What's happening and why</h3>${s.exp}`;
+  $("visual").scrollTop = 0; $("explain").scrollTop = 0;
+  $("counter").textContent = `${cur+1} / ${STEPS.length}`;
+  $("prog").style.width = ((cur+1)/STEPS.length*100) + "%";
+  $("prev").disabled = cur===0; $("next").disabled = cur===STEPS.length-1;
+  [...$("sections").children].forEach(b=>b.classList.toggle("on", b.dataset.sec===s.sec));
+  history.replaceState(null,"","#"+(cur+1));
+}
+function rebuild(start=0){
+  STEPS = build();
+  const secs = [...new Set(STEPS.map(s=>s.sec))];
+  $("sections").innerHTML = secs.map(sec=>`<button data-sec="${esc(sec)}">${esc(sec)}</button>`).join("");
+  [...$("sections").children].forEach(b=>b.onclick=()=>show(STEPS.findIndex(s=>s.sec===b.dataset.sec)));
+  show(start);
+}
+$("prev").onclick = ()=>show(cur-1);
+$("next").onclick = ()=>show(cur+1);
+document.addEventListener("keydown", e=>{
+  if ($("modal").classList.contains("show")) return;
+  if (e.key==="ArrowRight"||e.key==="PageDown") show(cur+1);
+  if (e.key==="ArrowLeft"||e.key==="PageUp") show(cur-1);
+});
+$("edit").onclick = ()=>{ $("inCorpus").value=CFG.corpus; $("inRounds").value=CFG.rounds; $("inWords").value=CFG.words; $("modal").classList.add("show"); };
+$("cancel").onclick = ()=>$("modal").classList.remove("show");
+$("reset").onclick = ()=>{ $("inCorpus").value=DEFAULT.corpus; $("inRounds").value=DEFAULT.rounds; $("inWords").value=DEFAULT.words; };
+$("apply").onclick = ()=>{
+  CFG = {corpus:$("inCorpus").value.trim()||DEFAULT.corpus, rounds:Math.max(1,Math.min(20,parseInt($("inRounds").value)||6)), words:$("inWords").value||DEFAULT.words};
+  $("modal").classList.remove("show"); rebuild(0);
+};
+rebuild(Math.max(0,(parseInt(location.hash.slice(1))||1)-1));
+</script>
+</body>
+</html>
