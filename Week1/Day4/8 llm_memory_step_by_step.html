@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM Memory — Step by Step</title>
+<style>
+:root{--or:#F26B21;--navy:#1F2430;--bl:#2F7BD8;--gr:#1E8449;--rd:#C0392B;--pu:#7B4FD0;--bg:#F4F5F7;--line:#dde1e8;--tx:#262b36;--mut:#6b7385;--yel:#FFF1B8}
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:var(--bg);color:var(--tx);line-height:1.45}
+button{font-family:inherit}
+
+/* ---------- header / controls ---------- */
+.hdr{background:var(--or);color:#fff;padding:14px 20px 12px}
+.hdr h1{margin:0;font-size:clamp(19px,3.2vw,28px);font-weight:800;letter-spacing:-.01em}
+.hdr p{margin:3px 0 0;font-size:clamp(12px,1.8vw,14px);opacity:.95}
+.top{position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line);box-shadow:0 3px 10px rgba(20,25,40,.07)}
+.secnav{display:flex;gap:6px;padding:8px 14px 2px;overflow-x:auto;scrollbar-width:thin}
+.secnav button{flex:0 0 auto;border:1.5px solid var(--line);background:#fff;color:#444;border-radius:99px;padding:5px 12px;font-size:12.5px;font-weight:700;cursor:pointer;transition:.2s}
+.secnav button:hover{border-color:var(--or);color:var(--or)}
+.secnav button.on{background:var(--or);border-color:var(--or);color:#fff}
+.ctrl{display:flex;align-items:center;gap:8px;padding:8px 14px 10px;flex-wrap:wrap}
+.btn{border:0;border-radius:9px;padding:8px 14px;font-weight:800;font-size:13.5px;cursor:pointer;background:var(--navy);color:#fff;transition:.15s}
+.btn:hover{filter:brightness(1.18)}
+.btn:disabled{opacity:.35;cursor:default;filter:none}
+.btn.or{background:var(--or)}
+.btn.gh{background:#fff;color:var(--navy);border:1.5px solid var(--line)}
+.cnt{font-weight:800;font-size:14px;min-width:92px;text-align:center;font-variant-numeric:tabular-nums}
+.prog{flex:1 1 140px;height:9px;background:#e7eaf0;border-radius:99px;overflow:hidden;min-width:100px}
+.prog i{display:block;height:100%;width:0;background:var(--or);border-radius:99px;transition:width .45s}
+
+/* ---------- layout ---------- */
+.grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px;padding:16px;max-width:1480px;margin:0 auto}
+.stage,.expl{background:#fff;border:1px solid var(--line);border-radius:14px}
+.stage{padding:16px;min-height:520px;overflow:hidden}
+.expl{padding:16px 18px;align-self:start;position:sticky;top:116px;max-height:calc(100vh - 132px);overflow:auto}
+@media(max-width:900px){.grid{grid-template-columns:1fr;padding:10px}.expl{position:static;max-height:none}.stage{padding:12px}}
+.scene{display:none}
+.scene.show{display:block;animation:fadein .35s}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.sh{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--or);margin-bottom:10px;padding-bottom:8px;border-bottom:2px solid #ffe3d3}
+
+/* ---------- reveal system ---------- */
+.rv{opacity:0;transform:translateY(10px);transition:opacity .5s,transform .5s;pointer-events:none}
+.rv.on{opacity:1;transform:none;pointer-events:auto}
+.rv.nt{transform:none}
+.item.rv{transform:translateX(-26px)}
+.item.rv.on{transform:none}
+.swap:not(.on){display:none!important}
+.swap.on{animation:fadein .45s}
+.rv.on.dim,.dim{opacity:.28}
+.rv.on.lost{opacity:.3}
+.lost .tx,.lost.item .tx{text-decoration:line-through}
+
+/* ---------- messages / nodes / code ---------- */
+.bub{border-radius:12px;padding:8px 11px;font-size:13.5px;border:1.5px solid;margin:3px 0}
+.bub small{display:block;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;opacity:.7}
+.bub.u{background:#E8F1FD;border-color:var(--bl);color:#173e72}
+.bub.a{background:#E5F5EB;border-color:var(--gr);color:#14532d}
+.bub.s{background:#EEF0F4;border-color:#b8bfcc;color:#444}
+.bub.r{background:#FBE9E7;border-color:var(--rd);color:#7a1f15}
+.nd{background:#fff;border:2px solid var(--line);border-radius:12px;padding:8px 10px;text-align:center;font-size:13px;display:flex;flex-direction:column;align-items:center;gap:3px;min-width:0;transition:border-color .3s,box-shadow .3s}
+.nd .ico{font-size:22px;line-height:1;display:flex}
+.nd .tt{display:flex;flex-direction:column;align-items:center;min-width:0}
+.nd b{font-size:13.5px;line-height:1.2}
+.nd small{color:var(--mut);font-size:11px;line-height:1.25}
+.nd.llm{background:var(--navy);border-color:var(--navy);color:#fff}
+.nd.llm small{color:#b8c0d4}
+.nd.usr{border-color:var(--bl);background:#EEF5FD}
+.nd.app{border-color:var(--or);background:#FFF4EC}
+.nd.db{border-color:#5b6b8c;background:#F1F4FA}
+.nd.emb{border-color:var(--pu);background:#F3EEFC}
+.nd.ok{border-color:var(--gr);background:#EAF7EF}
+.nd.row{flex-direction:row;text-align:left;gap:9px;padding:6px 10px}
+.nd.row .tt{align-items:flex-start}
+.nd.act{border-color:var(--or)!important;box-shadow:0 0 0 4px rgba(242,107,33,.28);animation:pulse 1.4s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 3px rgba(242,107,33,.28)}50%{box-shadow:0 0 0 8px rgba(242,107,33,.1)}}
+.nd.wiped{border-style:dashed;border-color:var(--rd)}
+.nd .ram{display:none}
+.nd.wiped .ram{display:block;color:var(--rd);font-weight:800;font-size:11px}
+.code{background:var(--navy);color:#e8ebf2;border-radius:10px;padding:9px 11px;font:11.8px/1.55 ui-monospace,SFMono-Regular,Consolas,Menlo,monospace;min-width:0}
+.code .ct{color:#9aa3b8;font:700 10.5px system-ui,sans-serif;letter-spacing:.05em;text-transform:uppercase;margin-bottom:4px}
+.cl{white-space:pre-wrap;word-break:break-word;padding:1px 5px;border-radius:5px;margin:1px 0;min-height:1.2em}
+.cl .k{color:#8fc1ff}.cl .s{color:#a5e3b5}.cl .n{color:#ffcf8a}
+.cl.hl{background:rgba(255,214,10,.3)}
+.cl.ghost{background:rgba(192,57,43,.28);outline:1.5px dashed #ff8a7b;color:#ffd5cf}
+.cg{border-radius:6px;padding:1px 0;transition:background .3s}
+.cg.act{background:rgba(242,107,33,.3)}
+.pb{white-space:pre-wrap;border-left:4px solid #8a93a8;padding:4px 9px;margin:5px 0;border-radius:4px;font-family:inherit}
+.pb b{display:block;font:700 10px system-ui,sans-serif;color:#aeb7cc;letter-spacing:.06em;text-transform:uppercase}
+.pb.rt{border-color:#4ccf86;background:rgba(76,207,134,.13)}
+.pb.qq{border-color:#6fb0ff;background:rgba(111,176,255,.15)}
+.pb.mm{border-color:#ffcf8a;background:rgba(255,207,138,.13)}
+.act:not(.arr):not(.nd):not(td):not(th):not(.cl):not(.cg):not(tr):not(.rec){outline:3px solid rgba(242,107,33,.55);outline-offset:2px}
+.rec.act{outline:3px solid rgba(242,107,33,.55);outline-offset:1px}
+td.act,tr.act{background:var(--yel)}
+th.act{background:var(--or)!important;color:#fff}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:start}
+.mob .two,.two.one{grid-template-columns:1fr}
+.col{display:flex;flex-direction:column;gap:8px;min-width:0}
+.mini{margin:0 0 4px;font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+.callout{border-radius:10px;padding:9px 12px;font-size:13px;font-weight:600;margin-top:10px;border:2px solid}
+.callout.info{background:#FFF4EC;border-color:#ffd2b6;color:#7a3510}
+.callout.ok{background:#E5F5EB;border-color:var(--gr);color:#14532d}
+.callout.bad,.warn{background:#FBE9E7;border:2px solid var(--rd);color:var(--rd);font-weight:800;border-radius:10px;padding:10px 12px;margin-top:10px;text-align:center;font-size:13.5px}
+.done{background:#EEF0F4;border-radius:8px;padding:6px 8px;font-size:12px;font-weight:700;color:#555;text-align:center;margin-top:6px}
+.chip{font-size:11px;font-weight:800;background:#EEF0F4;color:#555;border-radius:99px;padding:2px 9px}
+.chip2{background:#EEF5FD;border:1.5px solid var(--bl);border-radius:9px;padding:7px 10px;font-size:13px}
+.reqbox{border:2px solid var(--line);border-radius:14px;padding:10px;display:flex;flex-direction:column;background:#fcfcfd;min-width:0}
+.rb-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:14px}
+
+/* ---------- arrows ---------- */
+.arr{position:relative;display:flex;align-items:center;justify-content:center;flex:0 0 auto;color:#c3c9d6;--ac:var(--or)}
+.arr .ln{display:block;position:relative;background:currentColor;border-radius:2px}
+.arr .pk{position:absolute;width:11px;height:11px;border-radius:50%;background:var(--ac);opacity:0;box-shadow:0 0 0 3px rgba(255,255,255,.85)}
+.arr .al{position:absolute;font-size:10.5px;font-weight:700;color:var(--mut);white-space:nowrap;background:#fff;padding:0 4px;border-radius:4px;z-index:2;line-height:1.3}
+.arr.act{color:var(--ac)!important}
+.arr.act .pk{opacity:1}
+.arr.g{--ac:var(--gr)}.arr.b{--ac:var(--bl)}.arr.p{--ac:var(--pu)}.arr.red{--ac:var(--rd)}
+.arr.hz{min-width:54px;height:32px}
+.fl>.arr.hz{flex:0 0 58px;min-width:0}
+.gc .arr.hz,.dual .arr.hz{width:100%}
+.arr.hz .ln{width:100%;height:3px}
+.arr.hz .al{top:-1px;left:50%;transform:translateX(-50%)}
+.arr.vt{width:30px;height:42px;align-self:center;flex-direction:column}
+.arr.vt.sm{height:22px}
+.arr.vt .ln{width:3px;height:100%}
+.arr.vt .al{left:calc(50% + 8px);top:50%;transform:translateY(-50%)}
+.arr.hz.fw .ln::after{content:'';position:absolute;right:-2px;top:50%;margin-top:-6px;border:6px solid transparent;border-left:9px solid currentColor;border-right:0}
+.arr.hz.bw .ln::before{content:'';position:absolute;left:-2px;top:50%;margin-top:-6px;border:6px solid transparent;border-right:9px solid currentColor;border-left:0}
+.arr.vt.fw .ln::after{content:'';position:absolute;bottom:-2px;left:50%;margin-left:-6px;border:6px solid transparent;border-top:9px solid currentColor;border-bottom:0}
+.arr.vt.bw .ln::before{content:'';position:absolute;top:-2px;left:50%;margin-left:-6px;border:6px solid transparent;border-bottom:9px solid currentColor;border-top:0}
+.arr.hz.fw .pk{left:0;top:50%;margin-top:-5px}
+.arr.hz.bw .pk{right:0;top:50%;margin-top:-5px}
+.arr.vt.fw .pk{top:0;left:50%;margin-left:-5px}
+.arr.vt.bw .pk{bottom:0;left:50%;margin-left:-5px}
+.arr.act.hz.fw .pk{animation:pkr 1.2s linear infinite}
+.arr.act.hz.bw .pk{animation:pkl 1.2s linear infinite}
+.arr.act.vt.fw .pk{animation:pkd 1.1s linear infinite}
+.arr.act.vt.bw .pk{animation:pku 1.1s linear infinite}
+@keyframes pkr{from{left:0}to{left:calc(100% - 11px)}}
+@keyframes pkl{from{right:0}to{right:calc(100% - 11px)}}
+@keyframes pkd{from{top:0}to{top:calc(100% - 11px)}}
+@keyframes pku{from{bottom:0}to{bottom:calc(100% - 11px)}}
+.arr.dash.hz .ln{background:repeating-linear-gradient(90deg,currentColor 0 6px,transparent 6px 10px)}
+.arr.dash.vt .ln{background:repeating-linear-gradient(180deg,currentColor 0 6px,transparent 6px 10px)}
+.fl{display:flex;align-items:center;gap:6px}
+.fl>.nd{flex:1 1 0}
+.fl>.bub{flex:1.3 1 0;margin:0}
+.fl>.code{flex:1.1 1 0}
+.mob .fl{flex-direction:column;align-items:stretch}
+.mob .fl>.nd,.mob .fl>.bub,.mob .fl>.code{flex:none;width:100%}
+.mob .hm{display:none}
+
+/* ---------- section 1 ---------- */
+.s1b{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mob .s1b{grid-template-columns:1fr}
+.s1b .code{font-size:11px}
+
+/* ---------- section 2 ---------- */
+.listbox{border:2.5px dashed var(--or);border-radius:12px;padding:10px;background:#FFF8F2;display:flex;flex-direction:column;gap:6px}
+.lh{font-size:13px;margin-bottom:2px}.lh span{color:var(--mut);font-size:11.5px;margin-left:4px}
+.item{display:flex;gap:7px;align-items:center;border:1.5px solid;border-radius:8px;padding:5px 8px;font-size:12.5px;transition:box-shadow .3s,background .3s}
+.item .ix{font:700 11.5px ui-monospace,Consolas,monospace;opacity:.7}
+.item .tg{font-size:10px;font-weight:800;text-transform:uppercase;border-radius:5px;padding:1px 5px;background:rgba(0,0,0,.08)}
+.item.u{background:#E8F1FD;border-color:var(--bl)}.item.a{background:#E5F5EB;border-color:var(--gr)}.item.s{background:#EEF0F4;border-color:#b8bfcc}
+.item.sent{box-shadow:0 0 0 3px rgba(242,107,33,.55)}
+.item.hlq{box-shadow:0 0 0 3px var(--bl)}
+.item.hln{background:var(--yel)!important;border-color:#c99a00!important}
+.rowB{margin-top:2px}
+.payw{flex:1.2 1 0;min-width:0}
+.llmcol{flex:0 0 150px;display:flex;flex-direction:column;gap:6px}
+.mob .llmcol{flex:none;width:100%}
+.think{background:#fff;border:2px solid var(--line);border-radius:10px;padding:8px 11px;font-size:13px;margin-top:8px}
+.think .y{background:var(--yel);padding:0 4px;border-radius:4px}.think .q{background:#D6E7FB;padding:0 4px;border-radius:4px}
+.tks{display:flex;flex-wrap:wrap;gap:5px;margin:6px 0}
+.tk{font-size:11px;font-weight:800;border-radius:6px;padding:3px 7px;background:#E8F1FD;border:1.5px solid var(--bl);color:#173e72}
+.tk.a{background:#E5F5EB;border-color:var(--gr);color:#14532d}
+.swap.on .tk{animation:popin .35s both;animation-delay:calc(var(--i)*.13s)}
+@keyframes popin{from{opacity:0;transform:scale(.6)}to{opacity:1;transform:none}}
+.win{border:2.5px solid var(--navy);border-radius:10px;padding:6px 8px;flex:1 1 60%;background:#fafbfd}
+.over{border:2.5px dashed var(--rd);border-radius:10px;padding:6px 8px;flex:1 1 30%;background:#FFF5F3}
+.wrow{display:flex;gap:8px;flex-wrap:wrap}
+.wl{font-size:11.5px;font-weight:800}.over .wl{color:var(--rd)}
+.over .tk{background:#FBE9E7;border-color:var(--rd);color:#7a1f15}
+
+/* ---------- section 3 ---------- */
+.arch{display:grid;grid-template-columns:minmax(0,1fr) 58px minmax(0,1fr) 58px minmax(0,1fr) 62px minmax(0,1fr);grid-template-rows:auto 46px auto;align-items:center}
+.gc{min-width:0}
+.mob .arch{display:flex;flex-direction:column;align-items:stretch;gap:4px}
+.dual{display:flex;flex-direction:column;gap:2px}
+.dtl{margin-top:14px}
+.tblw{border:2px solid #5b6b8c;border-radius:10px;overflow:hidden;background:#fff}
+.tblw .th{background:#5b6b8c;color:#fff;font-size:12px;font-weight:700;padding:5px 10px}
+.tblw table{width:100%;border-collapse:collapse;font-size:12.5px}
+.tblw th,.tblw td{padding:5px 10px;text-align:left;border-bottom:1px solid var(--line)}
+.tblw thead th{background:#eef1f7;font-size:11.5px}
+.tblw tr.good td{background:#E5F5EB}
+.chat{border:2px solid var(--line);border-radius:10px;padding:8px 10px}
+.chat h5{margin:0 0 3px;font-size:11.5px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+
+/* ---------- section 4 ---------- */
+.tw{overflow-x:auto}
+.tb{width:100%;border-collapse:collapse;font-size:12px;margin-top:12px;min-width:540px}
+.tb th,.tb td{border:1px solid var(--line);padding:5px 7px;text-align:left;vertical-align:top}
+.tb th{background:#F0F2F6;font-size:11px;text-transform:uppercase;letter-spacing:.03em}
+.tb td.mono{font:11px ui-monospace,Consolas,monospace;color:#5a3ea8}
+.vdb{border:2px solid #5b6b8c;border-radius:12px;padding:9px 10px;background:#F7F8FC}
+.vh{display:flex;align-items:center;gap:8px;font-weight:800;font-size:13px}
+.vh svg{width:22px;height:25px}
+.rec{display:grid;grid-template-columns:60px 1fr 118px;gap:8px;align-items:center;padding:6px 8px;border:1.5px solid var(--line);border-radius:8px;font-size:12.5px;margin-top:5px;background:#fff;transition:.3s}
+.rec .rid{font:700 11px ui-monospace,Consolas,monospace;color:#5b6b8c}
+.mob .rec{grid-template-columns:1fr}
+.rec.good{border-color:var(--gr);background:#E5F5EB}
+.sc{display:flex;align-items:center;gap:6px}
+.sc .bar{flex:1;height:8px;background:#e6e9ef;border-radius:9px;overflow:hidden}
+.sc i{display:block;height:100%;width:0;background:var(--or);transition:width 1s}
+.sc.on i{width:var(--w)}
+.rec.good .sc i{background:var(--gr)}
+.sc em{font-style:normal;font-weight:800;font-size:12px;font-variant-numeric:tabular-nums}
+.ret{border:2.5px solid var(--gr);background:#E5F5EB;border-radius:10px;padding:9px 12px;font-size:13.5px}
+.ret b{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--gr)}
+.cmpc{border:2px solid var(--line);border-radius:10px;padding:10px;font-size:13px}
+.cmpc h4{margin:0 0 6px;font-size:14px}
+.cmpc.no{border-color:var(--rd);background:#FFF8F7}.cmpc.yes{border-color:var(--gr);background:#F5FBF7}
+.verdict{font-weight:800;margin-top:6px}.no .verdict{color:var(--rd)}.yes .verdict{color:var(--gr)}
+
+/* ---------- section 5 ---------- */
+.s5g{display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.2fr);gap:14px;align-items:start}
+.mob .s5g{grid-template-columns:1fr}
+.pipe5{display:flex;flex-direction:column;align-items:stretch}
+.pipe5 .nd{padding:6px 10px}
+.back5{font-size:12px;font-weight:700;color:var(--mut);text-align:center;margin-top:4px}
+.src{border:2px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:8px;transition:.3s}
+.src h4{margin:0 0 5px;font-size:12.5px}
+.cand{font-size:12.5px;border:1.5px solid var(--line);border-radius:7px;padding:3px 8px;margin-top:4px;background:#fafbfd;transition:.3s}
+.cand.good{background:#E5F5EB;border-color:var(--gr);font-weight:700}
+.dist{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mob .dist{grid-template-columns:1fr}
+.dc{border:2px solid var(--line);border-radius:10px;padding:10px 12px;font-size:13px}
+.dc b{display:block;color:var(--or);margin-bottom:3px}
+
+/* ---------- section 6 ---------- */
+.cmp{width:100%;border-collapse:collapse;font-size:13px;min-width:560px}
+.cmp th,.cmp td{border:1px solid var(--line);padding:8px 9px;text-align:left;vertical-align:top;transition:background .3s}
+.cmp thead th{background:var(--navy);color:#fff}
+.cmp tbody th{background:#F0F2F6;width:18%}
+
+/* ---------- section 7 ---------- */
+.lane{border:2px solid;border-radius:12px;padding:10px;display:flex;flex-direction:column;min-width:0}
+.lane h4{margin:0 0 8px;font-size:13px}
+.lane.A{border-color:#d7ccf3;background:#FAF8FE}.lane.A h4{color:var(--pu)}
+.lane.B{border-color:#bfe3cc;background:#F6FCF8}.lane.B h4{color:var(--gr)}
+.lane .arr{color:#c9ccd6}
+.lane.A .arr{color:#cdbff0}.lane.B .arr{color:#a7d9bb}
+.lane.A .nd{border-color:#d7ccf3}.lane.B .nd{border-color:#bfe3cc}
+.lane .nd.llm{border-color:var(--navy)}
+.lg{display:flex;gap:16px;flex-wrap:wrap;font-size:12.5px;font-weight:700;margin-bottom:10px}
+.sw{display:inline-block;width:26px;height:0;border-top:3px solid;vertical-align:middle;margin-right:5px}
+.sw.p{border-top-style:dashed;border-color:var(--pu)}.sw.g{border-color:var(--gr)}
+.kc{background:var(--navy);color:#fff;border-radius:12px;padding:14px 16px;margin-top:12px;font-size:15px;font-weight:700;line-height:1.5}
+.kc em{font-style:normal;color:#ffb98f}
+
+/* ---------- explanation panel ---------- */
+.ex-sec{font-size:11px;font-weight:800;letter-spacing:.07em;color:var(--or);text-transform:uppercase}
+.expl h2{margin:4px 0 2px;font-size:20px;line-height:1.25}
+.stepof{font-size:12px;color:var(--mut);margin-bottom:8px}
+.rows{margin:0}
+.row{display:grid;grid-template-columns:106px 1fr;gap:8px;padding:7px 0;border-top:1px dashed var(--line);font-size:13.5px}
+.row dt{font-weight:800;color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.03em;padding-top:2px}
+.row dd{margin:0}
+.row.miss dt{color:var(--rd)}
+.row.own dd b{background:var(--navy);color:#fff;border-radius:99px;padding:1px 10px;font-size:12.5px}
+.note{border-radius:10px;padding:9px 11px;margin-top:10px;font-size:13.5px;font-weight:600;border:2px solid}
+.note.info{background:#FFF4EC;border-color:#ffd2b6;color:#7a3510}
+.note.warn{background:#FBE9E7;border-color:var(--rd);color:var(--rd)}
+.note.ok{background:#E5F5EB;border-color:var(--gr);color:#14532d}
+.expl.fade>*{animation:fadein .4s}
+.foot{text-align:center;color:var(--mut);font-size:12px;padding:6px 10px 22px}
+@media(max-width:560px){.row{grid-template-columns:1fr;gap:1px}.btn{padding:8px 11px}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header class="hdr">
+  <h1>How LLM Memory Works — Step by Step</h1>
+  <p>Stateless APIs → conversation history → databases → vector search &amp; RAG → how chat apps manage context · Use ← → keys</p>
+</header>
+<div class="top">
+  <nav class="secnav" id="secnav" aria-label="Sections"></nav>
+  <div class="ctrl">
+    <button class="btn" id="prev">◀ Previous</button>
+    <button class="btn or" id="next">Next ▶</button>
+    <span class="cnt" id="cnt">1 / 1</span>
+    <div class="prog" aria-hidden="true"><i id="bar"></i></div>
+    <button class="btn gh" id="auto">▶ Auto Play</button>
+    <button class="btn gh" id="reset">↺ Start Again</button>
+  </div>
+</div>
+<main class="grid">
+  <section class="stage" id="stage" aria-live="polite"></section>
+  <aside class="expl" id="expl"></aside>
+</main>
+<div class="foot">Simulated data only · embedding values are illustrative · ChatGPT / Claude architecture shown conceptually, not as verified internals</div>
+
+<script>
+/* =====================================================================
+   HELPERS — small HTML builders used by every scene
+   ===================================================================== */
+const ID  = id => id ? ` data-id="${id}"` : '';
+const RV  = id => id ? ' rv' : '';
+// tiny syntax highlighter (single pass, so it never re-wraps generated markup)
+const hy = s => s.replace(/("[^"]*")(:)?|\b(messages|append|SELECT|FROM|WHERE|INSERT|INTO|VALUES)\b/g,
+  (m, str, col, kw) => str ? `<span class="${col ? 'k' : 's'}">${str}</span>${col || ''}` : kw ? `<span class="n">${kw}</span>` : m);
+const L = (t, cls = '', id = '') => `<div class="cl ${cls}"${ID(id)}>${hy(t)}</div>`;
+const code = (id, cls, inner, title = '') => `<div class="code ${cls}${RV(id)}"${ID(id)}>${title ? `<div class="ct">${title}</div>` : ''}${inner}</div>`;
+const bub = (id, role, txt, lab = '') => `<div class="bub ${role}${RV(id)}"${ID(id)}>${lab ? `<small>${lab}</small>` : ''}${txt}</div>`;
+const nd = (id, cls, ico, t, sub = '') => `<div class="nd ${cls}${RV(id)}"${ID(id)}><div class="ico">${ico}</div><div class="tt"><b>${t}</b>${sub ? `<small>${sub}</small>` : ''}</div></div>`;
+const DIR = { r: ['hz', 'fw'], l: ['hz', 'bw'], d: ['vt', 'fw'], u: ['vt', 'bw'] };
+const ar = (id, dir, label = '', col = '', x = '') => {
+  const [o, b] = DIR[dir];
+  return `<div class="arr ${o} ${b} ${col} ${x} rv"${ID(id)} data-o="${o}" data-b="${b}"${x.includes('sn') ? ' data-sn="1"' : ''}>${label ? `<span class="al">${label}</span>` : ''}<i class="ln"></i><i class="pk"></i></div>`;
+};
+const dbSvg = (c = '#5b6b8c') => `<svg width="30" height="34" viewBox="0 0 30 34" aria-hidden="true"><ellipse cx="15" cy="7" rx="12" ry="5" fill="${c}" fill-opacity=".25" stroke="${c}" stroke-width="2"/><path d="M3 7v20c0 2.8 5.4 5 12 5s12-2.2 12-5V7" fill="${c}" fill-opacity=".12" stroke="${c}" stroke-width="2"/><path d="M3 17c0 2.8 5.4 5 12 5s12-2.2 12-5" fill="none" stroke="${c}" stroke-width="2"/></svg>`;
+
+// reusable JSON lines (the same payloads the lesson talks about)
+const M = {
+  sys: '{"role": "system", "content": "You are a helpful assistant"}',
+  u1:  '{"role": "user", "content": "Hi! I\'m Utsab!"}',
+  a1:  '{"role": "assistant", "content": "Hi Utsab! How can I help you?"}',
+  u2:  '{"role": "user", "content": "What\'s my name?"}'
+};
+
+/* =====================================================================
+   SCENES — one builder per section. Every element that must be revealed
+   carries data-id; steps (further below) list which ids to show/hide/act.
+   ===================================================================== */
+
+/* ---------- SECTION 1 : stateless LLM ---------- */
+function s1() {
+  const pay1 = L('[') + L('  ' + M.sys + ',', '', 'r1ps') + L('  ' + M.u1, '', 'r1pu') + L(']');
+  const pay2 = L('[') + L('  ' + M.sys + ',') + `<div class="cl ghost rv" data-id="r2g"><b>⚠ NOT INCLUDED:</b> ${M.u1}</div>` + L('  ' + M.u2) + L(']');
+  const req1 = `<div class="reqbox rv" data-id="r1">
+    <div class="rb-h"><b>API Request #1</b><span class="chip">first call</span></div>
+    ${bub('r1u', 'u', "Hi! I'm Utsab!", 'User types')}
+    ${ar('r1a1', 'd', 'app builds payload')}
+    ${code('r1p', '', pay1, 'request payload')}
+    ${ar('r1a2', 'd', 'HTTPS POST')}
+    ${nd('r1l', 'llm', '🤖', 'LLM API', 'sees only this request')}
+    ${ar('r1a3', 'd', 'response')}
+    ${bub('r1r', 'a', 'Hi Utsab! How can I help you?', 'LLM reply')}
+    <div class="done rv" data-id="r1d">✔ Request #1 finished · connection closed · nothing remembered</div>
+  </div>`;
+  const req2 = `<div class="reqbox rv" data-id="r2">
+    <div class="rb-h"><b>API Request #2</b><span class="chip">separate, brand-new call</span></div>
+    ${bub('r2u', 'u', "What's my name?", 'User types')}
+    ${ar('r2a1', 'd', 'app builds payload')}
+    ${code('r2p', '', pay2, 'request payload')}
+    ${ar('r2a2', 'd', 'HTTPS POST')}
+    ${nd('r2l', 'llm', '🤖', 'LLM API', 'sees only this request')}
+    ${ar('r2a3', 'd', 'response')}
+    ${bub('r2r', 'r', "I don't have that information. Could you tell me your name?", 'LLM reply')}
+  </div>`;
+  return `<div class="s1b">${req1}${req2}</div>
+    <div class="warn rv" data-id="w1">⚠️ Previous conversation history was not supplied to the LLM.</div>
+    <div class="callout ok rv" data-id="tk1">The model has no built-in memory between calls. “Memory” = whatever your application puts into the next request.</div>`;
+}
+
+/* ---------- SECTION 2 : python list ---------- */
+function s2() {
+  const cg = (id, lines) => `<div class="cg rv" data-id="${id}">${lines.map(l => L(l)).join('')}</div>`;
+  const item = (id, i, cls, tag, txt) => `<div class="item ${cls} rv" data-id="${id}"><span class="ix">[${i}]</span><span class="tg">${tag}</span><span class="tx">${txt}</span></div>`;
+  const pay = (n) => {
+    const l = [M.sys, M.u1, M.a1, M.u2].slice(0, n);
+    return '[' === '' ? '' : L('[') + l.map((x, i) => L('  ' + x + (i < n - 1 ? ',' : ''))).join('') + L(']');
+  };
+  const codeInner = cg('c1', ['messages = [', '    {"role": "system", "content": "You are a helpful assistant"}', ']'])
+    + cg('c2', ['messages.append({', '    "role": "user",', '    "content": "Hi! I\'m Utsab!"', '})'])
+    + cg('c3', ['messages.append({', '    "role": "assistant",', '    "content": "Hi Utsab! How can I help you?"', '})'])
+    + cg('c4', ['messages.append({', '    "role": "user",', '    "content": "What\'s my name?"', '})']);
+  const chips = (arr, cls = '') => arr.map(([t, c], i) => `<span class="tk ${c}" style="--i:${i}">${t}</span>`).join('');
+  const inside = [['system', ''], ['U1', ''], ['A1', 'a'], ['U2', ''], ['A2', 'a'], ['U3', ''], ['A3', 'a'], ['U4', ''], ['A4', 'a'], ['U5', '']];
+  const outside = [['A5', 'a'], ['U6', ''], ['A6', 'a'], ['U7', '']];
+  return `<div class="swap" data-id="s2main">
+    <div class="two">
+      ${code('s2code', '', codeInner, 'Python application')}
+      <div class="listbox rv" data-id="s2list">
+        <div class="lh">🐍 <b>messages</b> <span>Python list · stored in RAM</span></div>
+        ${item('i0', 0, 's', 'system', 'You are a helpful assistant')}
+        ${item('i1', 1, 'u', 'user', "Hi! I'm Utsab!")}
+        ${item('i2', 2, 'a', 'assistant', 'Hi Utsab! How can I help you?')}
+        ${item('i3', 3, 'u', 'user', "What's my name?")}
+      </div>
+    </div>
+    ${ar('s2a0', 'd', 'all messages together')}
+    <div class="fl rowB">
+      <div class="payw">
+        ${code('s2pay1', 'swap', pay(2), 'request #1 payload')}
+        ${code('s2pay2', 'swap', pay(4), 'request #2 payload')}
+      </div>
+      ${ar('s2ar', 'r', 'HTTPS')}
+      <div class="llmcol">
+        ${nd('s2llm', 'llm', '🤖', 'LLM', 'stateless API')}
+        ${bub('s2resp1', 'a swap', 'Hi Utsab! How can I help you?', 'reply')}
+        ${bub('s2resp2', 'a swap', 'Your name is Utsab.', 'reply')}
+      </div>
+    </div>
+    <div class="think rv" data-id="s2think">🔎 The LLM reads <span class="y">[1] user: “Hi! I'm Utsab!” → the name is Utsab</span> and <span class="q">[3] user: “What's my name?” → the question</span>. Both together give the answer.</div>
+    <div class="warn rv" data-id="s2restart">🔄 App restarted → <code>messages</code> is back to just the system message. “Utsab” is gone.</div>
+  </div>
+  <div class="swap" data-id="s2ctx">
+    <p style="margin:0 0 6px;font-size:13.5px"><b>Context window</b> = the maximum amount of text (tokens) a model can read in <u>one</u> request. Every request re-sends the whole list:</p>
+    <div class="wrow">
+      <div class="win"><div class="wl">✔ Fits inside the context window</div><div class="tks">${chips(inside)}</div></div>
+      <div class="over"><div class="wl">✂ Does not fit</div><div class="tks">${chips(outside)}</div></div>
+    </div>
+    <div class="two" style="margin-top:12px">
+      <div class="cmpc no"><h4>Problems with “send everything”</h4>• more tokens → higher cost<br>• slower responses<br>• eventually exceeds the limit</div>
+      <div class="cmpc yes"><h4>What real apps do</h4>• trim the oldest messages<br>• summarize older turns<br>• retrieve only relevant info (next sections)</div>
+    </div>
+  </div>`;
+}
+
+/* ---------- SECTION 3 : database ---------- */
+function s3() {
+  const cell = (r, c, o, html, cls = '') => `<div class="gc ${cls}" style="grid-area:${r}/${c};order:${o}">${html}</div>`;
+  const dual = `<div class="dual">${ar('a-bq', 'r', 'SQL query', 'b')}${ar('a-br', 'l', 'rows', 'g')}</div>`;
+  const grid = `<div class="arch">
+    ${cell(1, 1, 10, nd('n-user', 'usr', '👤', 'User', 'asks questions'))}
+    ${cell(1, 2, 15, ar('a-uf', 'r', 'text'))}
+    ${cell(1, 3, 20, nd('n-front', '', '🖥️', 'Frontend', 'chat page'))}
+    ${cell(1, 4, 25, ar('a-fb', 'r', 'API call'))}
+    ${cell(1, 5, 30, nd('n-back', 'app', '🐍', 'Python Backend', 'your server code<span class="ram">RAM: empty ✖</span>'))}
+    ${cell(1, 6, 35, dual)}
+    ${cell(1, 7, 40, nd('n-db', 'db', dbSvg(), 'Database', 'separate from the LLM'))}
+    ${cell(2, 5, 50, ar('a-bp', 'd', 'build prompt'))}
+    ${cell(3, 5, 60, nd('n-prompt', 'emb', '🧩', 'Context Construction', 'prompt builder'))}
+    ${cell(3, 4, 65, ar('a-pl', 'l', 'prompt', '', 'sn'))}
+    ${cell(3, 3, 70, nd('n-llm', 'llm', '🤖', 'LLM', 'generates answer'))}
+    ${cell(3, 2, 75, ar('a-la', 'l', 'answer', '', 'sn'))}
+    ${cell(3, 1, 80, nd('n-ans', 'ok', '💬', 'Response', '“Your name is Utsab.”'))}
+    ${cell(2, 1, 85, ar('a-au', 'u', 'to user'), 'hm')}
+  </div>`;
+  const chat = `<div class="chat rv" data-id="s3chat"><h5>Earlier conversation</h5>
+    ${bub('m1', 'u', 'My name is Utsab.')}${bub('m2', 'u', "I'm learning Python.")}${bub('m3', 'u', "I'm interested in artificial intelligence.")}</div>`;
+  const tbl = `<div class="tblw rv" data-id="s3tbl"><div class="th">🗄️ table: user_memory</div><table>
+    <thead><tr><th>user_id</th><th>information</th></tr></thead><tbody>
+    <tr class="rv nt" data-id="t1"><td>101</td><td>Name: Utsab</td></tr>
+    <tr class="rv nt" data-id="t2"><td>101</td><td>Learning: Python</td></tr>
+    <tr class="rv nt" data-id="t3"><td>101</td><td>Interest: Artificial Intelligence</td></tr></tbody></table></div>`;
+  const sql = code('s3sql', '', L('SELECT information') + L('FROM   user_memory') + L('WHERE  user_id = 101;') + L('# Python: rows = cursor.execute(sql).fetchall()'), 'query run by the backend');
+  const prompt = code('s3prompt', '',
+    `<div class="pb"><b>System</b>You are a helpful assistant.</div>` +
+    `<div class="pb rt"><b>Retrieved user information</b>- Name: Utsab\n- Learning: Python\n- Interest: Artificial Intelligence</div>` +
+    `<div class="pb qq"><b>Current user question</b>"What's my name?"</div>`, 'constructed prompt → sent to the LLM');
+  return `${grid}
+  <div class="two dtl">
+    <div class="col">${chat}${bub('s3q', 'u', "What's my name?", 'New question (after restart)')}
+      <div class="chip2 rv" data-id="s3uid">🔑 Identified from login session: <b>user_id = 101</b></div>
+      <div class="warn rv" data-id="s3restart" style="margin-top:0">🔄 Application restarted — Python memory is empty. The database is untouched.</div>
+    </div>
+    <div class="col">${tbl}${sql}${prompt}</div>
+  </div>`;
+}
+
+/* ---------- SECTION 4 : vector DB + RAG ---------- */
+const HIST = ['My name is Utsab.', "I'm studying Computer Science.", 'I want to become an AI engineer.', "I'm currently learning Python and machine learning.", 'I want to build my own AI assistant.'];
+const VEC = ['[0.12, 0.87, 0.34, 0.56, …]', '[0.55, 0.18, 0.72, 0.09, …]', '[0.81, 0.40, 0.15, 0.63, …]', '[0.21, 0.65, 0.42, 0.91, …]', '[0.77, 0.36, 0.22, 0.58, …]'];
+const SCORE = [0.31, 0.42, 0.38, 0.93, 0.47];
+function s4() {
+  const intro = `<div class="swap" data-id="s4intro">
+    <div class="rv" data-id="s4hist"><p class="mini">Stored conversation history (5 messages)</p>
+      ${HIST.map((t, i) => bub('', 'u', t, 'message ' + (i + 1))).join('')}
+      <div class="callout info">Storing every message is possible. But sending ALL of them to the LLM on every request is slow, costly, and may not fit the context window. We want only the <u>relevant</u> messages.</div>
+    </div>
+    <div class="two rv" data-id="s4cmp" style="margin-top:12px">
+      <div class="cmpc no"><h4>🗄️ Normal database lookup</h4>Question: <i>“What programming language am I learning?”</i>
+        ${code('', '', L("SELECT * FROM memory") + L("WHERE text LIKE '%programming language%';"))}
+        <div class="verdict">0 rows ✗ — the stored text says “Python”, not “programming language”.</div></div>
+      <div class="cmpc yes"><h4>🧠 Semantic (vector) search</h4>Compares <b>meaning</b>, not exact words:
+        <p style="margin:6px 0">“programming language I'm learning” ≈ “learning Python and machine learning”</p>
+        <div class="verdict">1 strong match ✔</div></div>
+    </div>
+  </div>`;
+  const rows = HIST.map((t, i) => `<tr><td>${i + 1}</td><td class="rv nt" data-id="A-c">${t}</td><td class="rv nt" data-id="A-k">chunk_${i + 1}</td><td class="rv nt mono" data-id="A-v">${VEC[i]}</td><td class="rv nt" data-id="A-s">✔ mem_00${i + 1}</td></tr>`).join('');
+  const A = `<div class="swap" data-id="s4A">
+    <div class="fl">
+      ${nd('pa-h', 'usr', '📜', 'Conversation history', '5 messages')}${ar('pa-a1', 'r', 'split')}
+      ${nd('pa-c', 'app', '✂️', 'Chunking', 'small pieces')}${ar('pa-a2', 'r', 'text')}
+      ${nd('pa-e', 'emb', '🧠', 'Embedding model', 'text → numbers')}${ar('pa-a3', 'r', 'vectors')}
+      ${nd('pa-v', 'db', dbSvg(), 'Vector database', 'stores vectors')}
+    </div>
+    <div class="tw"><table class="tb"><thead><tr><th>#</th><th class="rv nt" data-id="A-c">Conversation history</th><th class="rv nt" data-id="A-k">Chunk</th><th class="rv nt" data-id="A-v">Embedding vector (illustrative)</th><th class="rv nt" data-id="A-s">Vector DB</th></tr></thead><tbody>${rows}</tbody></table></div>
+    <div class="callout info rv" data-id="s4disc">⚠ These numbers are illustrative, not real calculated embeddings. Real vectors have hundreds or thousands of values.</div>
+    ${code('s4rec', '', L('{') + L('  "id": "mem_004",') + L('  "vector": [0.21, 0.65, 0.42, 0.91, …],') + L('  "metadata": {') + L('    "user_id": 101,') + L('    "text": "I\'m currently learning Python and machine learning.",') + L('    "created_at": "2026-11-24"') + L('  }') + L('}'), 'one vector-database record').replace('class="code ', 'style="margin-top:10px" class="code ')}
+  </div>`;
+  const recs = HIST.map((t, i) => `<div class="rec" data-id="rec${i + 1}"><span class="rid">mem_00${i + 1}</span><span>${t}</span><span class="sc rv nt" data-id="sc${i + 1}"><span class="bar"><i style="--w:${Math.round(SCORE[i] * 100)}%"></i></span><em>${SCORE[i].toFixed(2)}</em></span></div>`).join('');
+  const B = `<div class="swap" data-id="s4B">
+    <div class="fl">
+      ${bub('qbub', 'u', 'What programming language am I learning?', 'New question')}${ar('qa1', 'r', 'text')}
+      ${nd('embed2', 'emb', '🧠', 'Embedding model', 'same model as indexing')}${ar('qa2', 'r', 'vector')}
+      ${code('qvec', '', L('[0.20, 0.66, 0.40, 0.89, …]'), 'query vector')}
+    </div>
+    ${ar('qa3', 'd', 'similarity search')}
+    <div class="vdb rv" data-id="s4vdb"><div class="vh">${dbSvg()} Vector database · 5 stored records <span class="chip">scores are illustrative</span></div>${recs}</div>
+    ${ar('qa4', 'd', 'top match returned')}
+    <div class="ret rv" data-id="s4ret"><b>Retrieved context → Python backend</b>“I'm currently learning Python and machine learning.”</div>
+  </div>`;
+  const C = `<div class="swap" data-id="s4C">
+    ${code('pc', '',
+      `<div class="pb rv" data-id="p1"><b>System</b>You are a helpful assistant.</div>` +
+      `<div class="pb rt rv" data-id="p2"><b>Retrieved context</b>The user previously said:\n"I'm currently learning Python and machine learning."</div>` +
+      `<div class="pb qq rv" data-id="p3"><b>Current question</b>"What programming language am I learning?"</div>`, 'complete prompt built by the backend')}
+    ${ar('ca1', 'd', 'send complete prompt')}
+    <div class="fl">${nd('cllm', 'llm', '🤖', 'LLM', 'reads the whole prompt')}${ar('ca2', 'r', 'answer')}${bub('cans', 'a', 'You are learning Python and machine learning.', 'Final answer')}</div>
+    <div class="callout ok rv" data-id="s4note">RAG does not teach or retrain the LLM. It retrieves relevant information and passes it in as context — for this request only.</div>
+  </div>`;
+  return intro + A + B + C;
+}
+
+/* ---------- SECTION 5 : ChatGPT / Claude (conceptual) ---------- */
+function s5() {
+  const P = [['👤', 'User'], ['🖥️', 'Chat Interface'], ['⚙️', 'Application Backend'], ['🗂️', 'Conversation Context Manager'], ['🎯', 'Relevant Context Selection'], ['🧩', 'Prompt / Context Construction'], ['🤖', 'LLM'], ['💬', 'Response']];
+  const pipe = P.map((p, i) => nd('pn' + i, 'row' + (i === 6 ? ' llm' : ''), p[0], p[1]) + (i < P.length - 1 ? ar('pa' + i, 'd', '', '', 'sm') : '')).join('') + `<div class="back5 rv" data-id="pnb">↩ back through the Chat Interface to the User</div>`;
+  const dist = [['Conversation history', 'helps keep context <u>within</u> one conversation.'], ['Persistent memory', 'can preserve selected useful information <u>across</u> conversations.'], ['Context window', 'limits how much information can be given to the model at once.'], ['Context management', 'may select, summarize, or retrieve relevant information instead of sending every old message.'], ['Different products, different designs', 'ChatGPT, Claude and others implement these ideas differently. This lesson is a simplified concept.']];
+  return `<div class="callout info rv" data-id="s5d" style="margin-top:0">⚠ Conceptual & simplified — NOT the verified internal architecture of ChatGPT or Claude, and not “just a Python list or one vector DB”.</div>
+  <div class="swap" data-id="s5grid" style="margin-top:10px">
+    <div class="s5g">
+      <div class="pipe5">${pipe}</div>
+      <div>
+        ${bub('s5q', 'u', 'What project am I interested in building?', 'New question')}
+        <div class="src rv" data-id="src1"><h4>① Current conversation history</h4><div class="cand">User: Hi!</div><div class="cand">Assistant: Hello! How can I help?</div></div>
+        <div class="src rv" data-id="src2"><h4>② Persistent user memories <small>(when enabled &amp; available)</small></h4>
+          <div class="cand" data-id="m1">My name is Utsab.</div><div class="cand" data-id="m2">I'm learning Python.</div><div class="cand" data-id="m3">I want to build an AI assistant.</div></div>
+        <div class="src rv" data-id="src3"><h4>③ Connected knowledge sources <small>(when applicable)</small></h4><div class="cand">Not needed for this question</div></div>
+        ${code('s5ctx', '', `<div class="pb"><b>System</b>You are a helpful assistant.</div><div class="pb mm"><b>Selected memory</b>User wants to build an AI assistant.</div><div class="pb"><b>Recent messages</b>(the last few turns of this chat)</div><div class="pb qq"><b>Current question</b>What project am I interested in building?</div>`, 'context supplied to the model').replace('class="code ', 'style="margin-top:8px" class="code ')}
+        ${bub('s5ans', 'a', 'You are interested in building an AI assistant.', 'LLM response')}
+      </div>
+    </div>
+  </div>
+  <div class="swap" data-id="s5dist"><div class="dist">${dist.map(d => `<div class="dc"><b>${d[0]}</b>${d[1]}</div>`).join('')}</div></div>`;
+}
+
+/* ---------- SECTION 6 : comparison table ---------- */
+function s6() {
+  const heads = ['Stateless LLM', 'Python List', 'Database', 'RAG'];
+  const rows = [
+    ['Previous context', ['No automatic history', 'Yes', 'Yes, after retrieval', 'Relevant retrieved context']],
+    ['Persistent', ['No', 'No, by itself', 'Yes', 'Yes, with persistent storage']],
+    ['Retrieval', ['None', 'Direct history', 'Query-based', 'Semantic retrieval']],
+    ['Large history', ['Not automatically managed', 'Limited by context window', 'Can store large history', 'Retrieves selected information']],
+    ['Main purpose', ['Generate responses', 'Maintain current chat', 'Store persistent data', 'Find relevant context']]
+  ];
+  return `<div class="tw rv" data-id="s6t"><table class="cmp"><thead><tr><th>Feature</th>${heads.map((h, i) => `<th class="rv nt" data-id="k${i + 1}">${h}</th>`).join('')}</tr></thead><tbody>
+    ${rows.map(r => `<tr><th scope="row">${r[0]}</th>${r[1].map((c, i) => `<td class="rv nt" data-id="k${i + 1}">${c}</td>`).join('')}</tr>`).join('')}</tbody></table></div>
+    <div class="callout ok rv" data-id="s6k">They are not competitors — they are layers. Real applications combine them: a list for the current chat, a database for persistence, RAG for relevance.</div>`;
+}
+
+/* ---------- SECTION 7 : full architecture ---------- */
+function s7() {
+  const A = [['🖥️', 'Frontend', 'user sends a message'], ['🐍', 'Python Backend', 'receives &amp; validates'], ['🗂️', 'Conversation Manager', 'decides what to save'], [dbSvg().replace('width="30" height="34"', 'width="22" height="26"'), 'Database / Chat History', 'saves the raw messages'], ['🧠', 'Chunking + Embedding model', 'text → vectors'], [dbSvg('#7B4FD0').replace('width="30" height="34"', 'width="22" height="26"'), 'Vector Database', 'stores vectors + metadata']];
+  const B = [['🖥️', 'Frontend', 'new question'], ['🐍', 'Python Backend', 'receives the question'], ['🗂️', 'Conversation Manager', 'orchestrates context'], [dbSvg().replace('width="30" height="34"', 'width="22" height="26"'), 'Database / Chat History', 'loads recent turns'], ['🔎', 'RAG Retrieval', 'embeds question, searches'], [dbSvg('#1E8449').replace('width="30" height="34"', 'width="22" height="26"'), 'Vector Database', 'returns similar memories'], ['🧩', 'Relevant Context Construction', 'history + memories + question'], ['🤖', 'LLM API', 'generates the reply'], ['💬', 'Response', 'returned to the Frontend']];
+  const lane = (cls, key, title, list, col, x) => `<div class="lane ${cls}"><h4>${title}</h4>${list.map((n, i) => nd(key + (i + 1), 'row' + (key === 'b' && i === 7 ? ' llm' : ''), n[0], n[1], n[2]) + (i < list.length - 1 ? ar(key + 'a' + (i + 1), 'd', '', col, 'sm ' + x) : '')).join('')}</div>`;
+  return `<div class="lg rv" data-id="lg"><span><i class="sw p"></i>A. Memory storage flow (dashed purple)</span><span><i class="sw g"></i>B. Retrieval &amp; response flow (solid green)</span></div>
+  <div class="two">
+    ${lane('A', 'a', 'A · MEMORY STORAGE FLOW', A, 'p', 'dash')}
+    ${lane('B', 'b', 'B · RETRIEVAL + RESPONSE FLOW', B, 'g', '')}
+  </div>
+  <div class="kc rv" data-id="kc">The <em>LLM</em> is responsible for understanding and generating responses.<br>The <em>application</em> is responsible for managing, storing, retrieving, and supplying relevant context.</div>`;
+}
+
+/* =====================================================================
+   STEPS — each step lists what to reveal (show), remove (hide), pulse (act)
+   and temporarily mark. Visibility is cumulative inside a section, so
+   Previous/Next always replay to the same picture.
+   ===================================================================== */
+const SEC = [
+  { n: 'Stateless LLM', h: 'Section 1 — Why an LLM API is stateless', b: s1 },
+  { n: 'Python List', h: 'Section 2 — Short-term memory: conversation history', b: s2 },
+  { n: 'Database', h: 'Section 3 — Long-term memory: a database', b: s3 },
+  { n: 'Vector DB + RAG', h: 'Section 4 — Semantic memory: vector database + RAG', b: s4 },
+  { n: 'ChatGPT / Claude', h: 'Section 5 — How chat apps manage context (conceptual)', b: s5 },
+  { n: 'Comparison', h: 'Section 6 — Complete comparison', b: s6 },
+  { n: 'Full Architecture', h: 'Section 7 — Final architecture', b: s7 }
+];
+const STEPS = [];
+const add = (sec, o) => STEPS.push(Object.assign({ sec }, o));
+const rng = (p, a, b) => { const r = []; for (let i = a; i <= b; i++) r.push(p + i); return r; };
+
+/* ---- Section 1 ---- */
+add(1, { t: 'The user sends the first message', o: 'User → Chat UI', show: ['r1', 'r1u'], act: ['r1u'],
+  what: 'Utsab types a greeting into the chat box.', data: 'Plain text: "Hi! I\'m Utsab!"', to: 'The Python application behind the chat page.', why: 'Every conversation starts with text from the user.', miss: 'There is nothing to send, so no request exists.' });
+add(1, { t: 'The application sends it to the LLM API', o: 'Python application', show: ['r1a1', 'r1p', 'r1a2'], act: ['r1a1', 'r1p', 'r1a2'],
+  what: 'The app wraps the text in a messages list (system + user) and POSTs it to the API.', data: 'JSON payload with 2 messages.', to: 'The LLM API endpoint, over HTTPS.', why: 'The API only understands structured messages with roles.', miss: 'The model would not know its instructions or who is speaking.' });
+add(1, { t: 'The LLM processes the message', o: 'LLM', show: ['r1l'], act: ['r1l'],
+  what: 'The model reads ONLY the 2 messages inside this request.', data: 'Tokens made from the payload.', to: 'Stays inside the model for this single call.', why: 'A model can only use the text it is given in the request.', miss: 'No processing, no answer.' });
+add(1, { t: 'The LLM generates a response', o: 'LLM → Application', show: ['r1a3', 'r1r'], act: ['r1a3', 'r1r'],
+  what: 'The model predicts a reply and sends it back.', data: '"Hi Utsab! How can I help you?"', to: 'Back to the Python app, then to the chat UI.', why: 'The user needs an answer.', miss: 'The user would see nothing.' });
+add(1, { t: 'Request #1 finishes', o: 'LLM API', show: ['r1d'], act: ['r1d'],
+  what: 'The call ends. The conversation is not kept inside the model for next time.', data: 'Nothing is saved on the LLM side.', why: 'Stateless APIs treat every call as independent — simple and scalable.',
+  note: ['info', 'Stateless = every request is treated as brand new.'] });
+add(1, { t: 'The user sends a second message', o: 'User → Chat UI', show: ['r2', 'r2u'], act: ['r2u'],
+  what: 'A moment later, Utsab asks a follow-up in the same chat window.', data: '"What\'s my name?"', to: 'The Python application.', why: 'To the user it feels like one chat.',
+  note: ['info', 'To the user: one continuous chat. To the API: a separate, brand-new call.'] });
+add(1, { t: 'The application sends ONLY the new message', o: 'Python application', show: ['r2a1', 'r2p', 'r2a2'], act: ['r2a1', 'r2p', 'r2a2'],
+  what: 'The app builds a fresh payload: the system message plus the new question. Nothing from Request #1 is added.', data: 'JSON with 2 messages (system + user).', to: 'The LLM API.', why: 'The app alone decides what goes into each request.', miss: 'If the app leaves history out, the model never sees it.' });
+add(1, { t: 'The LLM receives no previous context', o: 'LLM', show: ['r2g', 'r2l'], act: ['r2l', 'r2g'], mark: { r1pu: 'hl' },
+  what: 'The model sees only these 2 messages. "Hi! I\'m Utsab!" exists only in Request #1 (highlighted on the left) and is missing here.', data: 'Same payload as the previous step.', why: 'LLMs use only the text inside the current request plus what they learned in training.', miss: 'Without the missing line, the name is not available to the model.' });
+add(1, { t: 'The LLM cannot identify the name', o: 'LLM → Application', show: ['r2a3', 'r2r', 'w1'], act: ['r2r', 'w1'],
+  what: 'With no name in its input, the model can only ask for it.', data: '"I don\'t have that information. Could you tell me your name?"', to: 'Back to the user.', why: 'This is the honest answer given what the model received.', miss: '—' });
+add(1, { t: 'Key idea: the LLM has no built-in memory', o: 'Your application', show: ['tk1'], act: ['tk1'],
+  what: 'Memory does not live inside the API. For the model to “remember”, the app must supply the earlier information again.', data: 'Earlier messages or retrieved facts, added to the next request.', to: 'Into the next request payload.', why: 'The next sections show three ways to do this.',
+  note: ['ok', 'Next: Python list → Database → Vector DB + RAG'] });
+
+/* ---- Section 2 ---- */
+add(2, { t: 'Create the messages list', o: 'Python application', show: ['s2main', 's2code', 'c1', 's2list', 'i0'], act: ['c1', 'i0'],
+  what: 'The app creates a Python list that will hold the whole conversation. It starts with the system message.', data: '1 message: {"role": "system", …}', to: 'Stored in the app\'s memory (RAM).', why: 'A list gives the app one place to keep every message.', miss: 'Nowhere to keep earlier messages — back to stateless.' });
+add(2, { t: 'Append the first user message', o: 'Python application', show: ['c2', 'i1'], act: ['c2', 'i1'],
+  what: 'messages.append(...) adds Utsab\'s greeting to the end of the list.', data: '{"role": "user", "content": "Hi! I\'m Utsab!"}', to: 'Index [1] of the list.', why: 'Each message must be stored before it can be re-sent later.', miss: 'The greeting would never become part of the history.' });
+add(2, { t: 'Send the whole list (request #1)', o: 'Python application → LLM', show: ['s2a0', 's2pay1', 's2ar', 's2llm'], act: ['s2a0', 's2ar', 's2pay1', 's2llm'], mark: { i0: 'sent', i1: 'sent' },
+  what: 'The app sends the entire list — 2 messages — as the request payload.', data: 'The list serialized to JSON.', to: 'The LLM API.', why: 'The model can only use what is inside the request.', miss: 'No payload, no reply.' });
+add(2, { t: 'Save the assistant reply into the list', o: 'Python application', show: ['s2resp1', 'c3', 'i2'], act: ['s2resp1', 'c3', 'i2'],
+  what: 'The LLM answers. The app appends this reply as an "assistant" message so the next request will include it too.', data: '{"role": "assistant", "content": "Hi Utsab! How can I help you?"}', to: 'Index [2] of the list.', why: 'The model needs to see its own earlier answers to stay consistent.', miss: 'The assistant\'s side of the chat would be missing.' });
+add(2, { t: 'Append the second user message', o: 'Python application', hide: ['s2pay1', 's2resp1'], show: ['c4', 'i3'], act: ['c4', 'i3'],
+  what: '"What\'s my name?" is appended as index [3] — the newest turn at the end of the list.', data: '{"role": "user", "content": "What\'s my name?"}', to: 'Index [3] of the list.', why: 'The new question must travel with the history.', miss: 'The question would not be sent.' });
+add(2, { t: 'Send ALL messages together (request #2)', o: 'Python application → LLM', show: ['s2pay2'], act: ['s2a0', 's2ar', 's2pay2', 's2llm'], mark: { i0: 'sent', i1: 'sent hln', i2: 'sent', i3: 'sent hlq' },
+  what: 'The app sends the full list — system, first user message, assistant reply, and the new question — in ONE request.', data: 'JSON array with 4 messages.', to: 'The LLM API.', why: 'The API is still stateless: the history is there only because the app re-sent it.', miss: 'Drop [1] and [2] and we are back to the Section 1 failure.',
+  note: ['info', 'Yellow = earlier message containing “Utsab”. Blue ring = the current question.'] });
+add(2, { t: 'The LLM uses context + current question', o: 'LLM', show: ['s2think', 's2resp2'], act: ['s2llm', 's2resp2', 's2think'], mark: { i1: 'hln', i3: 'hlq' },
+  what: 'The model reads the whole list, finds "Utsab" in message [1], and sees the question in [3].', data: 'Output: "Your name is Utsab."', to: 'Back to the app, then the user.', why: 'It needs both the context and the question.', miss: 'Without [1], it could not answer.' });
+add(2, { t: 'Limitation 1: a Python list is temporary', o: 'Python application (RAM)', show: ['s2restart'], act: ['s2restart'], mark: { i1: 'lost', i2: 'lost', i3: 'lost' },
+  what: 'If the app restarts, crashes, or the list goes out of scope, the messages disappear.', data: 'RAM is cleared; messages is back to [system].', why: 'Variables live in RAM, not on disk.', miss: 'Unless history is saved elsewhere (database or file), it is gone.',
+  note: ['warn', 'Short-term memory only: lost when the app restarts.'] });
+add(2, { t: 'Limitation 2: the context window is limited', o: 'LLM context window', hide: ['s2main', 's2restart'], show: ['s2ctx'], act: [],
+  what: 'Each request re-sends the whole list. As the chat grows, cost and latency grow, and eventually the list no longer fits in the model\'s context window.', data: 'More and more tokens in every request.', why: 'A model can read only a limited number of tokens per call.', miss: 'Requests fail, or old messages must be dropped.',
+  note: ['info', 'Fix ideas: trim, summarize, or fetch only what is relevant → Sections 3 and 4.'] });
+
+/* ---- Section 3 ---- */
+const S3ALL = ['n-user', 'n-front', 'n-back', 'n-db', 'n-prompt', 'n-llm', 'n-ans', 'a-uf', 'a-fb', 'a-bq', 'a-br', 'a-bp', 'a-pl', 'a-la'];
+add(3, { t: 'The architecture: the database sits outside the LLM', o: 'Whole system', show: S3ALL, act: ['n-db'],
+  what: 'User → Frontend → Python Backend → Database → Context Construction → LLM → Response. The database is a separate component that only the backend talks to.', why: 'Storage separate from the model lets data outlive any request or app restart.', miss: 'Memory would stay in RAM and vanish on restart.' });
+add(3, { t: 'Earlier conversation: the user shares facts', o: 'User → Frontend', show: ['s3chat', 'm1', 'm2', 'm3'], act: ['m1', 'm2', 'm3', 'n-user'],
+  what: 'In earlier chats, Utsab said three things about himself.', data: '3 short messages.', to: 'The Python backend.', why: 'These facts may help in future conversations.', miss: 'Nothing to remember.' });
+add(3, { t: 'The backend saves the facts in the database', o: 'Python backend → Database', show: ['s3tbl', 't1', 't2', 't3'], act: ['n-back', 'a-bq', 'n-db', 't1', 't2', 't3'],
+  what: 'The backend decides which facts are worth keeping and INSERTs them as rows tied to user_id 101.', data: '3 rows: Name, Learning, Interest.', to: 'The database (written to disk).', why: 'Databases persist data, so it survives restarts.', miss: 'The facts would live only in RAM.' });
+add(3, { t: 'The application restarts', o: 'Python backend', show: ['s3restart'], mark: { 'n-back': 'wiped', s3tbl: 'good' }, act: ['s3restart'],
+  what: 'The server restarts. Everything in Python memory (like a messages list) is gone, but the database table is still there.', data: 'None — RAM was cleared.', why: 'This is exactly the difference between temporary and persistent memory.',
+  note: ['ok', 'The user_memory table is untouched.'] });
+add(3, { t: 'The user asks a new question', o: 'User → Frontend', show: ['s3q', 'a-uf'], act: ['s3q', 'n-user', 'a-uf'],
+  what: 'After the restart, Utsab asks: "What\'s my name?"', data: 'Text of the question.', to: 'The frontend chat page.', why: 'A new conversation begins with nothing in the Python list.', miss: 'No question, no request.' });
+add(3, { t: 'The Python backend receives it', o: 'Frontend → Python backend', show: ['a-fb'], act: ['a-fb', 'n-front', 'n-back'],
+  what: 'The frontend forwards the question to the backend over an API call.', data: 'JSON like {"message": "What\'s my name?"} plus a login token.', to: 'The Python backend.', why: 'Only the backend may hold API keys and database access.', miss: 'Secrets would be exposed in the browser.' });
+add(3, { t: 'The backend identifies the user', o: 'Python backend', show: ['s3uid'], act: ['n-back', 's3uid'],
+  what: 'It reads the login session or token and finds user_id = 101.', data: 'user_id = 101', to: 'Used as a filter in the next query.', why: 'So we load THIS user\'s information, not someone else\'s.', miss: 'Wrong or private data of other users could be returned.' });
+add(3, { t: 'The backend queries the database', o: 'Python backend → Database', show: ['s3sql'], act: ['n-back', 'a-bq', 'n-db', 's3sql'],
+  what: 'The backend runs a SQL query for this user\'s stored information.', data: 'SELECT information FROM user_memory WHERE user_id = 101', to: 'The database.', why: 'Retrieval is the backend\'s job — the LLM cannot run SQL.', miss: 'No way to bring the stored facts back.' });
+add(3, { t: 'The database returns the rows', o: 'Database → Python backend', act: ['a-br', 'n-db', 'n-back'], mark: { t1: 'good', t2: 'good', t3: 'good' },
+  what: 'The database sends the matching rows back to the backend — NOT to the LLM.', data: '3 rows: "Name: Utsab", "Learning: Python", "Interest: Artificial Intelligence".', to: 'The Python backend.', why: 'The backend needs the data to build a prompt.', miss: 'The backend would have nothing to add to the prompt.',
+  note: ['info', 'The database never talks to the LLM directly.'] });
+add(3, { t: 'The backend constructs a new prompt', o: 'Python backend (context construction)', show: ['a-bp', 'n-prompt', 's3prompt'], act: ['a-bp', 'n-prompt', 's3prompt'],
+  what: 'It combines the system instruction, the retrieved information, and the current question into one prompt.', data: 'System text + 3 retrieved lines + the question.', to: 'The prompt builder, then the LLM.', why: 'The LLM understands only the text it is given.', miss: 'Retrieved data would never reach the model.' });
+add(3, { t: 'The prompt is sent to the LLM', o: 'Python backend → LLM API', show: ['a-pl', 'n-llm'], act: ['a-pl', 'n-llm'],
+  what: 'The backend sends the constructed prompt to the LLM API.', data: 'The full prompt (as a messages payload).', to: 'The LLM API.', why: 'This is the only way the model learns the stored facts.', miss: 'The model would again answer “I don\'t know.”' });
+add(3, { t: 'The LLM generates the answer', o: 'LLM', show: ['a-la', 'n-ans', 'a-au'], act: ['n-llm', 'a-la', 'n-ans', 'a-au'],
+  what: 'The LLM finds "Name: Utsab" in the prompt and answers. The backend returns it to the user.', data: '"Your name is Utsab."', to: 'Backend → Frontend → User.', why: 'The model can now use information it never stored itself.',
+  note: ['ok', 'Memory survived a restart because the DATABASE kept it, and the BACKEND supplied it.'] });
+
+/* ---- Section 4 ---- */
+add(4, { t: 'Problem: sending every message is inefficient', o: 'Application backend', show: ['s4intro', 's4hist'], act: ['s4hist'],
+  what: 'Imagine months of chat. Storing all messages is possible, but sending all of them to the LLM every time is slow, expensive, and may not fit the context window.', data: '5 messages here; thousands in real life.', why: 'We want only the relevant messages.', miss: 'The prompt grows without limit.' });
+add(4, { t: 'Keyword lookup vs semantic retrieval', o: 'Retrieval layer', show: ['s4cmp'], act: ['s4cmp'],
+  what: 'A normal database matches exact values or keywords. The question "What programming language am I learning?" shares no words with "Python". Semantic search compares meaning using embeddings.', data: 'A question vs stored text.', why: 'People rarely repeat the exact words they used earlier.', miss: 'Keyword search misses relevant memories.' });
+add(4, { t: 'Step A1 — Conversation history to index', o: 'Application backend', hide: ['s4intro'], show: ['s4A', 'pa-h', 'A-c'], act: ['pa-h', 'A-c'],
+  what: 'The backend takes the stored messages that should become searchable memory.', data: '5 plain-text messages.', to: 'The chunking step.', why: 'Text must be prepared before it can be searched by meaning.', miss: 'Nothing to index.' });
+add(4, { t: 'Step A2 — Chunking', o: 'Chunking logic (backend)', show: ['pa-a1', 'pa-c', 'A-k'], act: ['pa-a1', 'pa-c', 'A-k'],
+  what: 'Text is split into small pieces called chunks. Here each short message is one chunk.', data: '5 chunks: chunk_1 … chunk_5.', to: 'The embedding model.', why: 'Small, focused chunks retrieve more precisely.', miss: 'Long text mixes many topics into one fuzzy vector.' });
+add(4, { t: 'Step A3 — Embedding model', o: 'Embedding model', show: ['pa-a2', 'pa-e', 'A-v', 's4disc'], act: ['pa-a2', 'pa-e', 'A-v'],
+  what: 'An embedding model turns each chunk into a list of numbers (a vector) that captures its meaning.', data: 'e.g. [0.12, 0.87, 0.34, 0.56, …]', to: 'The vector database.', why: 'Computers compare numbers, not meaning in words.', miss: 'No similarity search is possible.',
+  note: ['info', 'Illustrative values, not real calculated embeddings.'] });
+add(4, { t: 'Step A4 — Store in the vector database', o: 'Vector database', show: ['pa-a3', 'pa-v', 'A-s'], act: ['pa-a3', 'pa-v', 'A-s'],
+  what: 'Each vector is saved with metadata (user_id, original text, timestamp).', data: '5 records: id + vector + metadata.', to: 'The vector database (persistent storage).', why: 'So we can search by similarity later, even after a restart.', miss: 'Embeddings would be recomputed every time.' });
+add(4, { t: 'What one vector-database record looks like', o: 'Vector database', show: ['s4rec'], act: ['s4rec'],
+  what: 'A record is an id, a vector, and metadata or a reference to the original text — not a plain human-readable copy of the whole conversation.', data: '{ id, vector, metadata }', why: 'The vector is used for searching; the metadata is what we return.', miss: 'We could find a match but not know what text it came from.' });
+add(4, { t: 'Step B1 — A new question arrives', o: 'Application backend', hide: ['s4A'], show: ['s4B', 'qbub', 's4vdb'], act: ['qbub'],
+  what: 'The user asks "What programming language am I learning?" The vector DB already holds the 5 memories.', data: 'Question text.', to: 'The backend.', why: 'This is the query we need to answer.', miss: 'No query, no retrieval.' });
+add(4, { t: 'Step B2 — Embed the question', o: 'Backend → Embedding model', show: ['qa1', 'embed2'], act: ['qa1', 'embed2'],
+  what: 'The backend sends the question to the SAME embedding model that was used for indexing.', data: 'The question text.', to: 'The embedding model.', why: 'Question and memories must live in the same vector space to be comparable.', miss: 'Vectors from different models cannot be compared.' });
+add(4, { t: 'Step B3 — The query vector', o: 'Embedding model', show: ['qa2', 'qvec'], act: ['qa2', 'qvec'],
+  what: 'The model returns a vector for the question.', data: '[0.20, 0.66, 0.40, 0.89, …]', to: 'The backend, then the vector database.', why: 'Now the question can be compared with stored vectors.', miss: 'No way to compare meaning.',
+  note: ['info', 'Notice it looks close to the stored Python vector [0.21, 0.65, 0.42, 0.91, …] (illustrative).'] });
+add(4, { t: 'Step B4 — Similarity search', o: 'Vector database', show: ['qa3', 'sc1', 'sc2', 'sc3', 'sc4', 'sc5'], act: ['qa3', 's4vdb'],
+  what: 'The vector DB compares the query vector with every stored vector (for example with cosine similarity) and scores each record.', data: 'Scores from 0 to 1 (illustrative).', to: 'A ranking inside the vector database.', why: 'This finds matches by meaning.', miss: 'No ranking, so no way to find the relevant record.' });
+add(4, { t: 'Step B5 — Retrieve the best match', o: 'Vector database', mark: { rec4: 'good', rec1: 'dim', rec2: 'dim', rec3: 'dim', rec5: 'dim' }, act: ['rec4'],
+  what: 'The top-scoring chunk is selected (top-k, here k = 1). The other records are faded out because they are not relevant to this question.', data: 'metadata.text of mem_004.', to: 'Returned to the backend.', why: 'Only the relevant memory should enter the prompt.', miss: 'We would send everything, or the wrong thing.' });
+add(4, { t: 'Step B6 — Backend receives the retrieved context', o: 'Vector database → Python backend', show: ['qa4', 's4ret'], mark: { rec4: 'good', rec1: 'dim', rec2: 'dim', rec3: 'dim', rec5: 'dim' }, act: ['qa4', 's4ret'],
+  what: 'The vector DB returns the matching text — not the whole history — to the backend.', data: '"I\'m currently learning Python and machine learning."', to: 'The Python backend.', why: 'The backend must hold the text to place it in a prompt.', miss: 'Retrieval would have no effect.' });
+add(4, { t: 'Step C1 — Build the augmented prompt', o: 'Python backend (prompt construction)', hide: ['s4B'], show: ['s4C', 'pc', 'p1', 'p2', 'p3'], act: ['pc'],
+  what: 'The backend combines the system message, the retrieved context, and the current question into one prompt.', data: 'System text + 1 retrieved chunk + question.', to: 'The LLM API.', why: 'This is the “augmented” part of Retrieval-Augmented Generation.', miss: 'The LLM would only see the bare question.' });
+add(4, { t: 'Step C2 — Send the prompt to the LLM', o: 'Python backend → LLM API', show: ['ca1', 'cllm'], act: ['ca1', 'cllm'],
+  what: 'The complete prompt is sent to the LLM.', data: 'The full prompt text.', to: 'The LLM API.', why: 'The model can use only what is in the prompt.', miss: 'The model could not answer.' });
+add(4, { t: 'Step C3 — The LLM generates the answer', o: 'LLM', show: ['ca2', 'cans', 's4note'], act: ['cllm', 'ca2', 'cans'],
+  what: 'The LLM reads the retrieved context and answers.', data: '"You are learning Python and machine learning."', to: 'Backend → Frontend → User.', why: 'Generation is the “G” in RAG.', miss: '—',
+  note: ['ok', 'RAG = Retrieval + Context construction + Generation. The LLM itself is not retrained.'] });
+
+/* ---- Section 5 ---- */
+const P5 = rng('pn', 0, 7).concat(rng('pa', 0, 6));
+add(5, { t: 'A conceptual architecture (simplified)', o: 'Chat application (conceptual)', show: ['s5grid', 's5d'].concat(P5), act: [],
+  what: 'Apps like ChatGPT and Claude sit between the user and the model. This is a generic, simplified picture; real internals are proprietary and differ between products.', why: 'It shows the jobs every chat app must handle.',
+  note: ['warn', 'Not the verified internal design of ChatGPT or Claude.'] });
+add(5, { t: 'Three conceptual sources of context', o: 'Context Manager (conceptual)', show: ['src1', 'src2', 'src3'], act: ['src1', 'src2', 'src3'],
+  what: 'An app can draw on: (1) the current conversation history, (2) persistent user memories, when enabled and available, and (3) connected knowledge sources, when applicable.', data: 'Chat turns, saved memories, documents or other connected context.', why: 'Different questions need different kinds of context.', miss: 'The model would only ever see the latest message.' });
+add(5, { t: 'A new question arrives', o: 'User → Chat Interface → Backend', show: ['s5q'], act: ['pn0', 'pn1', 'pn2', 'pa0', 'pa1', 's5q'],
+  what: 'Utsab asks "What project am I interested in building?" The chat interface passes it to the application backend.', data: 'The question text.', to: 'Application backend.', why: 'The backend coordinates everything that follows.', miss: 'No one would gather context.' });
+add(5, { t: 'The context manager gathers candidates', o: 'Conversation Context Manager', act: ['pn3', 'pa2', 'src1', 'src2', 'src3'],
+  what: 'It looks at everything it could include: recent chat turns, stored memories, connected sources.', data: 'Candidate snippets (not all of them will be sent).', to: 'The selection step.', why: 'The model can read only a limited context window.', miss: 'It would send everything or nothing.' });
+add(5, { t: 'Select the relevant context', o: 'Relevant Context Selection', act: ['pn4', 'pa3', 'm3'], mark: { m1: 'dim', m2: 'dim', m3: 'good', src3: 'dim' },
+  what: 'It picks "I want to build an AI assistant". The name and Python are less relevant to this question, and no connected source is needed.', data: 'One selected memory (+ recent messages).', to: 'Prompt / context construction.', why: 'Relevant context beats more context.', miss: 'Irrelevant text wastes tokens and can distract the model.',
+  note: ['info', 'Real systems may select, summarize, or retrieve — in different ways.'] });
+add(5, { t: 'Construct the final context', o: 'Prompt / Context Construction', show: ['s5ctx'], act: ['pn5', 'pa4', 's5ctx'],
+  what: 'The app assembles what the model will read: system instructions, the selected memory, recent messages, and the new question.', data: 'One structured prompt / messages list.', to: 'The LLM.', why: 'The model only sees what the application supplies.', miss: 'The memory would never reach the model.' });
+add(5, { t: 'The LLM answers', o: 'LLM → Chat Interface', show: ['s5ans', 'pnb'], act: ['pn6', 'pn7', 'pa5', 'pa6', 's5ans', 'pnb'],
+  what: 'The model answers from the supplied context. The response returns through the chat interface to the user.', data: '"You are interested in building an AI assistant."', to: 'Chat interface → User.', why: 'The user sees one natural reply.', miss: '—' });
+add(5, { t: 'Important distinctions', o: 'Concepts', hide: ['s5grid', 's5d'], show: ['s5dist'], act: [],
+  what: 'History, persistent memory, context windows, and context management are different ideas that work together.', why: 'Knowing which one solves which problem helps you design your own app.',
+  note: ['info', 'Different AI applications implement these capabilities differently.'] });
+
+/* ---- Section 6 ---- */
+add(6, { t: 'Stateless LLM', o: 'Concept comparison', show: ['s6t', 'k1'], act: ['k1'],
+  what: 'The raw API: no automatic history, nothing persistent, no retrieval. Great at generating responses from whatever text it is given.', why: 'This is the baseline every other approach builds on.' });
+add(6, { t: 'Python list', o: 'Concept comparison', show: ['k2'], act: ['k2'],
+  what: 'Direct history for the current chat. Simple, but temporary and limited by the context window.', why: 'Best for short-term memory inside one session.' });
+add(6, { t: 'Database', o: 'Concept comparison', show: ['k3'], act: ['k3'],
+  what: 'Persistent storage you query by user or key, then place into the prompt. Can hold very large histories.', why: 'Best for long-term, structured facts.' });
+add(6, { t: 'RAG (vector database)', o: 'Concept comparison', show: ['k4', 's6k'], act: ['k4', 's6k'],
+  what: 'Finds relevant context by meaning and retrieves only selected information.', why: 'Best when history is large and you need the right piece, not all of it.',
+  note: ['ok', 'Combine them: list + database + RAG.'] });
+
+/* ---- Section 7 ---- */
+const LA = rng('a', 1, 6).concat(rng('aa', 1, 5)), LB = rng('b', 1, 9).concat(rng('ba', 1, 8));
+add(7, { t: 'Two flows, one application', o: 'Whole application', show: ['lg'].concat(LA, LB), act: [],
+  what: 'A modern chat app has two flows. A (purple, dashed) stores memory. B (green, solid) retrieves it and generates the response. Both share the same stores.', why: 'Storing and retrieving are separate jobs, often at different times.', miss: 'Without A there is nothing to retrieve; without B stored memory is never used.' });
+add(7, { t: 'A · Store: save the message', o: 'Frontend → Backend → Conversation Manager → Database', act: ['a1', 'aa1', 'a2', 'aa2', 'a3', 'aa3', 'a4'],
+  what: 'The user\'s message (and later the assistant\'s reply) reaches the backend. The conversation manager decides what to keep and saves the raw messages to the database.', data: 'Raw message text + user_id + timestamp.', to: 'The database / chat history.', why: 'A permanent record survives restarts and can be reloaded.', miss: 'History disappears when the app restarts.' });
+add(7, { t: 'A · Store: embed and index', o: 'Chunking → Embedding model → Vector DB', act: ['a4', 'aa4', 'a5', 'aa5', 'a6'],
+  what: 'Selected text is chunked, embedded into vectors, and stored in the vector database together with metadata.', data: 'Chunks, vectors, metadata.', to: 'The vector database.', why: 'Indexing makes meaning-based search possible later.', miss: 'Semantic retrieval would have nothing to search.' });
+add(7, { t: 'B · Retrieve: question and recent history', o: 'Frontend → Backend → Conversation Manager → Database', act: ['b1', 'ba1', 'b2', 'ba2', 'b3', 'ba3', 'b4'],
+  what: 'A new question arrives. The conversation manager loads the recent turns from the database / chat history.', data: 'Question + last few messages.', to: 'The RAG retrieval step.', why: 'Recent turns give the local flow of the conversation.', miss: 'Replies would ignore what was just said.' });
+add(7, { t: 'B · Retrieve: RAG finds relevant memories', o: 'RAG Retrieval → Vector Database', act: ['b4', 'ba4', 'b5', 'ba5', 'b6'],
+  what: 'The question is embedded and the vector database returns the most similar stored chunks.', data: 'Query vector in; top matching chunks out.', to: 'Context construction.', why: 'Brings back old but relevant information without sending the whole history.', miss: 'Long-term knowledge would never be used.' });
+add(7, { t: 'B · Generate: build context, call the LLM, respond', o: 'Context Construction → LLM API → Frontend', act: ['b6', 'ba6', 'b7', 'ba7', 'b8', 'ba8', 'b9'],
+  what: 'The app builds the final context (history + memories + question), calls the LLM API, and returns the response to the frontend. The new exchange then goes through flow A to be stored.', data: 'One prompt in; one answer out.', to: 'LLM API → Backend → Frontend.', why: 'The model only sees what the app supplies.', miss: 'The model would answer without personal or past context.' });
+add(7, { t: 'The key concept', o: 'Your application', show: ['kc'], act: ['kc'],
+  what: 'The LLM understands and generates. Everything about memory — storing, retrieving, selecting, and supplying context — is application engineering.', why: 'This is what you design when you build a conversational AI product.',
+  note: ['ok', 'LLM = understands &amp; generates. Application = manages, stores, retrieves, supplies context.'] });
+
+/* =====================================================================
+   ENGINE
+   ===================================================================== */
+const $ = id => document.getElementById(id);
+const stage = $('stage'), expl = $('expl');
+let cur = 0, timer = null, mob = false;
+
+stage.innerHTML = SEC.map((s, i) => `<div class="scene" data-sec="${i + 1}"><div class="sh">${s.h}</div>${s.b()}</div>`).join('');
+$('secnav').innerHTML = SEC.map((s, i) => `<button data-sec="${i + 1}">${i + 1} · ${s.n}</button>`).join('');
+document.querySelectorAll('#secnav button').forEach(b => b.onclick = () => go(STEPS.findIndex(x => x.sec === +b.dataset.sec)));
+
+function fixArrows() {
+  document.querySelectorAll('.arr[data-o]').forEach(a => {
+    const m = mob && a.closest(".fl,.arch");
+    const o = m ? 'vt' : a.dataset.o;
+    let b = a.dataset.b;
+    if (m && b === 'bw' && a.dataset.sn) b = 'fw';
+    a.classList.remove('hz', 'vt', 'fw', 'bw');
+    a.classList.add(o, b);
+  });
+}
+const mm = window.matchMedia('(max-width:640px)');
+const onMM = () => { mob = mm.matches; document.body.classList.toggle('mob', mob); fixArrows(); };
+mm.addEventListener ? mm.addEventListener('change', onMM) : mm.addListener(onMM);
+onMM();
+
+function render() {
+  const st = STEPS[cur];
+  const scene = stage.querySelector(`.scene[data-sec="${st.sec}"]`);
+  stage.querySelectorAll('.scene').forEach(s => s.classList.toggle('show', s === scene));
+
+  // cumulative visibility inside this section
+  const vis = new Set();
+  STEPS.forEach((s, k) => {
+    if (k <= cur && s.sec === st.sec) { (s.hide || []).forEach(x => vis.delete(x)); (s.show || []).forEach(x => vis.add(x)); }
+  });
+  const all = scene.querySelectorAll('[data-id]');
+  all.forEach(el => { if (el._mk) { el.classList.remove(...el._mk); el._mk = null; } });
+  all.forEach(el => el.classList.toggle('on', vis.has(el.dataset.id)));
+
+  const addCls = (id, classes) => scene.querySelectorAll(`[data-id="${id}"]`).forEach(el => {
+    const list = classes.split(' ');
+    el.classList.add(...list);
+    el._mk = (el._mk || []).concat(list);
+  });
+  (st.act || []).forEach(id => addCls(id, 'act'));
+  Object.entries(st.mark || {}).forEach(([id, c]) => addCls(id, c));
+
+  // explanation panel
+  const inSec = STEPS.filter(s => s.sec === st.sec);
+  const rows = [['own', 'Component', st.o ? `<b>${st.o}</b>` : ''], ['what', 'What is happening', st.what], ['data', 'Data transferred', st.data],
+    ['to', 'Where it goes', st.to], ['why', 'Why it is needed', st.why], ['miss', 'If this step is missing', st.miss && st.miss !== '—' ? st.miss : '']];
+  expl.innerHTML = `<div class="ex-sec">Section ${st.sec} · ${SEC[st.sec - 1].n}</div><h2>${st.t}</h2>
+    <div class="stepof">Step ${inSec.indexOf(st) + 1} of ${inSec.length} in this section</div>
+    <dl class="rows">${rows.filter(r => r[2]).map(r => `<div class="row ${r[0]}"><dt>${r[1]}</dt><dd>${r[2]}</dd></div>`).join('')}</dl>
+    ${st.note ? `<div class="note ${st.note[0]}">${st.note[1]}</div>` : ''}`;
+  expl.classList.remove('fade'); void expl.offsetWidth; expl.classList.add('fade');
+
+  // controls
+  $('cnt').textContent = `${cur + 1} / ${STEPS.length}`;
+  $('bar').style.width = ((cur + 1) / STEPS.length * 100) + '%';
+  $('prev').disabled = cur === 0;
+  $('next').disabled = cur === STEPS.length - 1;
+  document.querySelectorAll('#secnav button').forEach(b => b.classList.toggle('on', +b.dataset.sec === st.sec));
+  const active = document.querySelector('#secnav button.on');
+  if (active && active.scrollIntoView) active.scrollIntoView({ block: 'nearest', inline: 'center' });
+}
+function go(i) { cur = Math.max(0, Math.min(STEPS.length - 1, i)); render(); }
+function stopAuto() { clearInterval(timer); timer = null; $('auto').textContent = '▶ Auto Play'; }
+function startAuto() {
+  $('auto').textContent = '⏸ Pause';
+  timer = setInterval(() => { if (cur >= STEPS.length - 1) stopAuto(); else go(cur + 1); }, 4800);
+}
+$('prev').onclick = () => go(cur - 1);
+$('next').onclick = () => go(cur + 1);
+$('reset').onclick = () => { stopAuto(); go(0); window.scrollTo({ top: 0, behavior: 'smooth' }); };
+$('auto').onclick = () => { if (timer) stopAuto(); else { if (cur >= STEPS.length - 1) go(0); startAuto(); } };
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') { e.preventDefault(); go(cur + 1); }
+  else if (e.key === 'ArrowLeft') { e.preventDefault(); go(cur - 1); }
+});
+go(0);
+</script>
+</body>
+</html>
